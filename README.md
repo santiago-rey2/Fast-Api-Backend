@@ -1,14 +1,6 @@
 # Fast API Backend
 
-API de gestión para - Vinos Dulces
-
-## 🚀 Instalación y Despliegue
-
-### 📋 Requisitos Previosarta```
-
-## 📝 Notas
-
-Los campos de denominación, bodega, uva y enólogo son campos que admiten valores nulos.estaurante común, formada por dos entidades básicas: **Platos** y **Vinos**.
+API de gestión para una carta de restaurante común, formada por dos entidades básicas: **Platos** y **Vinos**.
 
 ## 📋 Entidades
 
@@ -50,12 +42,48 @@ Las categorías de vinos serán adaptables para cada implementación, pero por d
 - Vinos Tintos
 - Vinos Dulces
 
-## � Instalación y Despliegue
+## 🚀 Instalación y Despliegue
 
 ### 📋 Requisitos Previos
 
 - Python 3.8 o superior
 - pip (gestor de paquetes de Python)
+- Docker (para la base de datos)
+
+### 🗄️ Configuración de la Base de Datos
+
+Este proyecto utiliza MySQL como base de datos. Para facilitar la configuración, utilizaremos Docker para ejecutar MySQL en un contenedor.
+
+1. **Instalar Docker**:
+   - Descarga e instala Docker Desktop desde [docker.com](https://www.docker.com/products/docker-desktop)
+
+2. **Ejecutar MySQL en Docker**:
+
+   ```bash
+   docker run --name restaurantdb -e MYSQL_ROOT_PASSWORD=123456789 -p 9000:3306 -d mysql
+   ```
+
+3. **Verificar que el contenedor está funcionando**:
+
+   ```bash
+   docker ps
+   ```
+
+4. **Conectar a la base de datos** (opcional, para verificar):
+
+   ```bash
+   docker exec -it restaurantdb mysql -u root -p
+   ```
+
+   - Contraseña: `123456789`
+
+#### Configuración de la Base de Datos
+
+- **Host**: `localhost`
+- **Puerto**: `9000`
+- **Usuario**: `root`
+- **Contraseña**: `123456789`
+- **Base de datos**: Se creará automáticamente por la aplicación
 
 ### 🔧 Instalación del Entorno
 
@@ -94,6 +122,8 @@ Las categorías de vinos serán adaptables para cada implementación, pero por d
 
 ### 🏃‍♂️ Ejecutar el Servidor
 
+**Importante**: Asegúrate de que el contenedor de MySQL esté ejecutándose antes de iniciar el servidor.
+
 1. **Modo desarrollo**:
 
    ```bash
@@ -127,6 +157,32 @@ Fast-Api-Backend/
 └── README.md           # Documentación del proyecto
 ```
 
-## �📝 Notas
+### 🐳 Comandos Útiles de Docker
+
+- **Detener el contenedor**:
+
+  ```bash
+  docker stop restaurantdb
+  ```
+
+- **Iniciar el contenedor** (si ya existe):
+
+  ```bash
+  docker start restaurantdb
+  ```
+
+- **Eliminar el contenedor**:
+
+  ```bash
+  docker rm restaurantdb
+  ```
+
+- **Ver logs del contenedor**:
+
+  ```bash
+  docker logs restaurantdb
+  ```
+
+## 📝 Notas
 
 Los campos de denominación, bodega, uva y enólogo son campos que admiten valores nulos.
