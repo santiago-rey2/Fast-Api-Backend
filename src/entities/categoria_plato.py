@@ -5,11 +5,12 @@ from typing import List, TYPE_CHECKING
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.database import Base
+from src.entities.mixins import AuditMixin
 
 if TYPE_CHECKING:
     from src.entities.plato import Plato
 
-class CategoriaPlato(Base):
+class CategoriaPlato(Base, AuditMixin):
     __tablename__ = "categoria_platos"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)

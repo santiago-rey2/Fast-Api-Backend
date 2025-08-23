@@ -7,6 +7,7 @@ from typing import Optional, List
 from sqlalchemy import String, Numeric, ForeignKey, Table, Column
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.database import Base
+from src.entities.mixins import AuditMixin
 
 # Tabla intermedia para relación many-to-many entre vinos y uvas
 vinos_uvas = Table(
@@ -16,7 +17,7 @@ vinos_uvas = Table(
     Column("uva_id", ForeignKey("uvas.id"), primary_key=True),
 )
 
-class Vino(Base):
+class Vino(Base, AuditMixin):
     __tablename__ = "vinos"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)

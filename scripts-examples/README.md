@@ -1,165 +1,95 @@
-# 📋 Scripts de Ejemplo
+# Scripts de Base de Datos
 
-Esta carpeta contiene scripts útiles para la gestión de la base de datos y carga de datos de ejemplo.
+Esta carpeta contiene los scripts esenciales para gestionar la base de datos del proyecto.
 
-## 🗃️ Scripts Disponibles
+## 📋 Scripts Disponibles
 
-### 1. `reset_database.py` - Reset Completo de Base de Datos
+### 1. 🗑️ `clear_database.py`
+**Propósito**: Elimina todas las tablas de la base de datos dejándola completamente vacía.
 
-**Propósito:** Elimina completamente la base de datos y la recrea con datos por defecto.
-
+**Uso**:
 ```bash
-python scripts-examples/reset_database.py
+python scripts-examples/clear_database.py
 ```
 
-**Qué hace:**
-- 🔥 Elimina todas las tablas existentes
-- 🏗️ Recrea la estructura de la base de datos
-- 🌱 Carga datos por defecto (categorías, alérgenos, etc.)
-- 👤 Crea usuario administrador por defecto
-
-**Datos por defecto incluidos:**
-- 10 categorías de platos
-- 14 alérgenos (legislación española)
-- 10 categorías de vinos
-- 5 denominaciones de origen básicas
-- 10 tipos de uva comunes
-- Usuario administrador: `admin` / `admin123`
+**Características**:
+- ✅ Elimina TODAS las tablas de la base de datos
+- ✅ Maneja foreign key constraints de MySQL
+- ✅ Verifica que la base de datos quede completamente vacía
+- ⚠️ NO carga ningún dato - solo eliminación
 
 ---
 
-### 2. `load_sample_data.py` - Cargar Datos de Ejemplo
+### 2. 📦 `load_sample_data.py`
+**Propósito**: Carga datos de ejemplo en la base de datos (platos y vinos realistas).
 
-**Propósito:** Carga datos de ejemplo realistas para desarrollo y testing.
-
+**Uso**:
 ```bash
 python scripts-examples/load_sample_data.py
 ```
 
-**Prerrequisitos:** La base de datos debe estar inicializada con datos por defecto.
+**Prerrequisitos**:
+- La base de datos debe tener la estructura básica (categorías, alérgenos, etc.)
+- Se recomienda ejecutar primero `setup_complete_database.py`
 
-**Qué carga:**
-- 🏭 8 bodegas españolas famosas
-- 👨‍🔬 6 enólogos reconocidos
-- 🍽️ 11 platos típicos españoles con alérgenos
-- 🍷 6 vinos representativos con sus características
-
-**Ejemplos de datos:**
-- **Platos:** Croquetas de jamón, Paella valenciana, Cochinillo asado, Crema catalana...
-- **Vinos:** Marqués de Riscal Reserva, Vega Sicilia Único, Martín Códax Albariño...
-- **Bodegas:** Marqués de Riscal, Vega Sicilia, Torres, González Byass...
+**Datos que carga**:
+- 🍽️ Platos de ejemplo con descripciones realistas
+- 🍷 Vinos de ejemplo con bodegas y enólogos
+- 🏭 Bodegas españolas
+- 👨‍🍳 Enólogos reconocidos
 
 ---
 
-### 3. `setup_complete_database.py` - Setup Completo Automático
+### 3. 🚀 `setup_complete_database.py`
+**Propósito**: Script completo que hace todo - elimina, crea estructura y carga datos.
 
-**Propósito:** Ejecuta el setup completo en un solo comando.
-
+**Uso**:
 ```bash
 python scripts-examples/setup_complete_database.py
 ```
 
-**Qué hace:**
-1. ✅ Ejecuta `reset_database.py`
-2. ✅ Ejecuta `load_sample_data.py`
-3. ✅ Verifica que todo esté correcto
+**Lo que hace**:
+1. 🔥 Elimina todas las tablas existentes
+2. 🏗️ Recrea la estructura de la base de datos
+3. 🌱 Carga datos por defecto (categorías, alérgenos, etc.)
+4. 👤 Crea usuario administrador (admin/admin123)
+5. 📦 Carga datos de ejemplo (platos y vinos)
 
-**Ideal para:** Configuración inicial del proyecto o reset completo para development.
-
----
-
-### 4. `run_extraction.py` - Web Scraping de Restaurantes
-
-**Propósito:** Extrae datos reales de cartas de restaurantes usando web scraping.
-
-```bash
-python scripts-examples/run_extraction.py
-```
-
-**Características:**
-- 🕷️ Web scraping inteligente
-- 🏷️ Creación dinámica de categorías
-- 💰 Extracción automática de precios
-- 📊 Datos realistas de restaurantes
+**¡Recomendado para setup inicial!**
 
 ---
 
 ## 🔄 Flujos de Trabajo Comunes
 
-### Configuración Inicial del Proyecto
+### Setup inicial completo
 ```bash
-# Setup completo automático
 python scripts-examples/setup_complete_database.py
-
-# Iniciar servidor
-python -m uvicorn src.main:app --reload
 ```
 
-### Reset Solo con Datos Por Defecto
+### Limpiar y empezar de cero (sin datos de ejemplo)
 ```bash
-# Solo datos básicos
-python scripts-examples/reset_database.py
-
-# Iniciar servidor
-python -m uvicorn src.main:app --reload
+python scripts-examples/clear_database.py
+# Luego usar la API o cargar datos manualmente
 ```
 
-### Agregar Datos de Ejemplo a Base Existente
+### Solo cargar datos de ejemplo
 ```bash
-# Solo si ya tienes datos por defecto
 python scripts-examples/load_sample_data.py
 ```
 
-### Cargar Datos Reales de Restaurantes
-```bash
-# Después de tener la base configurada
-python scripts-examples/run_extraction.py
-```
+---
 
-## ⚠️ Consideraciones Importantes
+## 📁 Archivos CSV de Ejemplo
 
-### Seguridad
-- 🔐 Estos scripts están diseñados para **desarrollo**
-- 🚫 **NO** usar en producción sin revisar configuraciones
-- 📝 Cambiar credenciales por defecto en producción
+- `example_alergenos.csv` - Lista de alérgenos según legislación española
+- `example_bodegas.csv` - Bodegas españolas de referencia  
+- `example_categorias.csv` - Categorías de platos y vinos
 
-### Base de Datos
-- 💾 Los scripts requieren conexión a MySQL
-- ⚙️ Verificar configuración en `src/core/config.py`
-- 🔄 Hacer backup antes de ejecutar reset en datos importantes
+## 🔐 Usuario Administrador
 
-### Dependencias
-- 📦 Asegurar que `requirements.txt` esté instalado
-- 🐍 Python 3.11+ requerido
-- 🗄️ MySQL Server corriendo
+Los scripts que crean estructura también crean un usuario administrador:
+- **Username**: admin
+- **Password**: admin123
+- **Role**: admin
 
-## 🆘 Solución de Problemas
-
-### Error de Conexión a Base de Datos
-```bash
-# Verificar que MySQL esté corriendo
-# Verificar configuración en src/core/config.py
-# Verificar credenciales de base de datos
-```
-
-### Error de Módulos no Encontrados
-```bash
-# Instalar dependencias
-pip install -r requirements.txt
-
-# Ejecutar desde el directorio raíz del proyecto
-cd Fast-Api-Backend
-python scripts-examples/reset_database.py
-```
-
-### Error de Permisos
-```bash
-# En Windows, ejecutar como administrador si es necesario
-# Verificar permisos de escritura en la base de datos
-```
-
-## 📖 Recursos Adicionales
-
-- **Documentación de la API:** `http://localhost:8000/docs`
-- **Panel de administración:** Usar credenciales `admin` / `admin123`
-- **Endpoints públicos:** `GET /api/v1/platos/` y `GET /api/v1/vinos/`
+Este usuario puede acceder a todos los endpoints protegidos de la API.

@@ -123,35 +123,14 @@ def create_admin_user():
     print("👤 Creando usuario administrador...")
     
     try:
-        from sqlalchemy.orm import sessionmaker
-        
-        engine = create_engine(settings.sync_dsn, echo=False)
-        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-        db = SessionLocal()
-        
-        try:
-            auth_service = AuthService()
-            
-            # Verificar si ya existe el usuario admin
-            existing_user = auth_service.get_user_by_username(db, "admin")
-            if existing_user:
-                print("ℹ️  Usuario administrador ya existe - usando el existente")
-                print(f"✅ Usuario administrador disponible: {existing_user.username}")
-                return True
-            
-            # Si no existe, crear uno nuevo
-            admin_user = auth_service.create_user(
-                db=db,
-                username="admin",
-                email="admin@restaurant.com",
-                password="admin123",
-                is_admin=True
-            )
-            print(f"✅ Usuario administrador creado: {admin_user.username}")
-            return True
-            
-        finally:
-            db.close()
+        auth_service = AuthService()
+        admin_user = auth_service.create_user(
+            username="admin",
+            password="admin123",
+            role="admin"
+        )
+        print(f"✅ Usuario administrador creado: {admin_user.username}")
+        return True
         
     except Exception as e:
         print(f"❌ Error creando usuario administrador: {e}")

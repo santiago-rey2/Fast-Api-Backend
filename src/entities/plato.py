@@ -7,6 +7,7 @@ from typing import Optional, List
 from sqlalchemy import String, Text, Numeric, ForeignKey, Table, Column
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.database import Base
+from src.entities.mixins import AuditMixin
 
 # Tabla intermedia para relación many-to-many entre platos y alérgenos
 platos_alergenos = Table(
@@ -16,7 +17,7 @@ platos_alergenos = Table(
     Column("alergeno_id", ForeignKey("alergenos.id"), primary_key=True),
 )
 
-class Plato(Base):
+class Plato(Base, AuditMixin):
     __tablename__ = "platos"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)

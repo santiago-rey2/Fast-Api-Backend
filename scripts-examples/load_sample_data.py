@@ -7,7 +7,7 @@ Este script carga datos de ejemplo realistas para platos y vinos,
 
 Prerrequisitos:
 - La base de datos debe estar inicializada con datos por defecto
-- Ejecutar primero: python scripts-examples/reset_database.py
+- Ejecutar primero: python scripts-examples/setup_complete_database.py
 
 Uso:
     python scripts-examples/load_sample_data.py
@@ -23,18 +23,27 @@ from typing import List
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
-from src.core.config import settings
-from src.entities.plato import Plato
-from src.entities.vino import Vino
-from src.entities.categoria_plato import CategoriaPlato
-from src.entities.categoria_vino import CategoriaVino
-from src.entities.alergeno import Alergeno
-from src.entities.bodega import Bodega
-from src.entities.denominacion_origen import DenominacionOrigen
-from src.entities.enologo import Enologo
-from src.entities.uva import Uva
+try:
+    from sqlalchemy import create_engine, text
+    from sqlalchemy.orm import sessionmaker
+    from src.core.config import settings
+    from src.entities.plato import Plato
+    from src.entities.vino import Vino
+    from src.entities.categoria_plato import CategoriaPlato
+    from src.entities.categoria_vino import CategoriaVino
+    from src.entities.alergeno import Alergeno
+    from src.entities.bodega import Bodega
+    from src.entities.denominacion_origen import DenominacionOrigen
+    from src.entities.enologo import Enologo
+    from src.entities.uva import Uva
+except ImportError as e:
+    print(f"❌ Error de importación: {e}")
+    print("💡 Asegúrate de:")
+    print("   1. Estar en el directorio raíz del proyecto")
+    print("   2. Tener instaladas las dependencias: pip install -r requirements.txt")
+    print("   3. Tener configurada la base de datos en src/core/config.py")
+    print("   4. Haber ejecutado primero: python scripts-examples/setup_complete_database.py")
+    sys.exit(1)
 
 def create_session():
     """Crea una sesión de base de datos"""
@@ -337,7 +346,7 @@ def main():
         categoria_count = db.query(CategoriaPlato).count()
         if categoria_count == 0:
             print("❌ Error: La base de datos no está inicializada")
-            print("💡 Ejecuta primero: python scripts-examples/reset_database.py")
+            print("💡 Ejecuta primero: python scripts-examples/setup_complete_database.py")
             return
         
         print(f"✅ Base de datos inicializada ({categoria_count} categorías encontradas)")
