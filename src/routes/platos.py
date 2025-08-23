@@ -6,6 +6,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from src.database import get_db
+from src.auth.dependencies import get_current_admin_user
+from src.entities.user import User
 from src.repositories.platos import PlatoRepository
 from src.services.platos import PlatoService
 from src.schemas.plato import PlatoCreate, PlatoUpdate, PlatoResponse, PlatosListResponse
@@ -53,9 +55,10 @@ def obtener_plato(
 @router.post("/", response_model=PlatoResponse, status_code=201)
 def crear_plato(
     plato_data: PlatoCreate,
+    current_admin: User = Depends(get_current_admin_user),
     service: PlatoService = Depends(get_plato_service)
 ):
-    """Crea un nuevo plato"""
+    """Crea un nuevo plato (requiere autenticación de administrador)"""
     try:
         plato = service.crear_plato(plato_data)
         return PlatoResponse.model_validate(plato)
@@ -66,9 +69,10 @@ def crear_plato(
 def actualizar_plato(
     plato_id: int,
     plato_data: PlatoUpdate,
+    current_admin: User = Depends(get_current_admin_user),
     service: PlatoService = Depends(get_plato_service)
 ):
-    """Actualiza un plato existente"""
+    """Actualiza un plato existente (requiere autenticación de administrador)"""
     try:
         plato = service.actualizar_plato(plato_id, plato_data)
         if not plato:
@@ -83,9 +87,10 @@ def actualizar_plato(
 @router.delete("/{plato_id}", status_code=204)
 def eliminar_plato(
     plato_id: int,
+    current_admin: User = Depends(get_current_admin_user),
     service: PlatoService = Depends(get_plato_service)
 ):
-    """Elimina un plato"""
+    """Elimina un plato (requiere autenticación de administrador)"""
     try:
         eliminado = service.eliminar_plato(plato_id)
         if not eliminado:

@@ -6,6 +6,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from src.database import get_db
+from src.auth.dependencies import get_current_admin_user
+from src.entities.user import User
 from src.repositories.vinos import VinoRepository
 from src.services.vinos import VinoService
 from src.schemas.vino import VinoCreate, VinoUpdate, VinoResponse, VinosListResponse
@@ -54,9 +56,10 @@ def obtener_vino(
 @router.post("/", response_model=VinoResponse, status_code=201)
 def crear_vino(
     vino_data: VinoCreate,
+    current_admin: User = Depends(get_current_admin_user),
     service: VinoService = Depends(get_vino_service)
 ):
-    """Crea un nuevo vino"""
+    """Crea un nuevo vino (requiere autenticación de administrador)"""
     try:
         vino = service.crear_vino(vino_data)
         return VinoResponse.model_validate(vino)
@@ -67,9 +70,10 @@ def crear_vino(
 def actualizar_vino(
     vino_id: int,
     vino_data: VinoUpdate,
+    current_admin: User = Depends(get_current_admin_user),
     service: VinoService = Depends(get_vino_service)
 ):
-    """Actualiza un vino existente"""
+    """Actualiza un vino existente (requiere autenticación de administrador)"""
     try:
         vino = service.actualizar_vino(vino_id, vino_data)
         if not vino:
@@ -84,9 +88,10 @@ def actualizar_vino(
 @router.delete("/{vino_id}", status_code=204)
 def eliminar_vino(
     vino_id: int,
+    current_admin: User = Depends(get_current_admin_user),
     service: VinoService = Depends(get_vino_service)
 ):
-    """Elimina un vino"""
+    """Elimina un vino (requiere autenticación de administrador)"""
     try:
         eliminado = service.eliminar_vino(vino_id)
         if not eliminado:

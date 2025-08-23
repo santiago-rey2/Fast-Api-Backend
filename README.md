@@ -5,13 +5,42 @@
 ## 🌟 Características Principales
 
 - ✅ **API REST completa** con CRUD para platos y vinos
-- 🛡️ **Panel de administración** con 25+ endpoints para gestión completa
+- � **Sistema de autenticación JWT** con roles de administrador
+- �🛡️ **Panel de administración** con 25+ endpoints para gestión completa
 - 🕷️ **Web scraping inteligente** con creación dinámica de categorías
 - 📊 **Sistema robusto de precios** con extracción automática de datos
 - 🏷️ **Gestión completa de alérgenos** según legislación española (14 alérgenos)
 - 🍷 **Gestión avanzada de vinos** con bodegas, denominaciones de origen y enólogos
 - 📋 **Paginación y filtrado** en todos los endpoints
 - 🔄 **Carga automática de datos** por defecto al iniciar
+
+## 🔐 Sistema de Autenticación
+
+### 🌍 Endpoints Públicos (sin autenticación)
+- `GET /api/v1/platos/` - Listar platos
+- `GET /api/v1/platos/{id}` - Ver plato específico
+- `GET /api/v1/vinos/` - Listar vinos
+- `GET /api/v1/vinos/{id}` - Ver vino específico
+
+### 🔒 Endpoints Protegidos (requieren autenticación de administrador)
+- `POST /api/v1/platos/` - Crear plato
+- `PUT /api/v1/platos/{id}` - Actualizar plato
+- `DELETE /api/v1/platos/{id}` - Eliminar plato
+- `POST /api/v1/vinos/` - Crear vino
+- `PUT /api/v1/vinos/{id}` - Actualizar vino
+- `DELETE /api/v1/vinos/{id}` - Eliminar vino
+- `ALL /api/v1/admin/*` - Panel de administración completo
+
+### 🔑 Credenciales por Defecto
+Al iniciar el servidor por primera vez, se crea automáticamente un usuario administrador:
+- **Username:** `admin`
+- **Password:** `admin123`
+- **Email:** `admin@restaurant.com`
+
+### 🚀 Cómo Autenticarse
+1. **Login:** `POST /api/v1/auth/login` con username y password
+2. **Obtener token JWT** en la respuesta
+3. **Usar el token** en el header: `Authorization: Bearer <token>`
 
 ## 🗄️ Modelo de Datos
 

@@ -10,6 +10,7 @@ from src.database import init_db
 from src.routes.platos import router as platos_router
 from src.routes.vinos import router as vinos_router
 from src.routes.admin import router as admin_router
+from src.routes.auth import router as auth_router
 
 # Crear la aplicación FastAPI
 app = FastAPI(
@@ -88,7 +89,19 @@ async def root():
         "version": "1.0.0",
         "docs": "/docs",
         "redoc": "/redoc",
-        "environment": settings.env
+        "environment": settings.env,
+        "public_endpoints": {
+            "platos": "/api/v1/platos",
+            "vinos": "/api/v1/vinos"
+        },
+        "auth_endpoints": {
+            "login": "/api/v1/auth/login",
+            "register": "/api/v1/auth/register"
+        },
+        "admin_endpoints": {
+            "administration": "/api/v1/admin",
+            "user_management": "/api/v1/auth/users"
+        }
     }
 
 @app.get("/health")
@@ -99,6 +112,7 @@ async def health_check():
 # Incluir routers de la API
 app.include_router(platos_router, prefix="/api/v1")
 app.include_router(vinos_router, prefix="/api/v1")
+app.include_router(auth_router, prefix="/api/v1")
 app.include_router(admin_router, prefix="/api/v1")
 
 if __name__ == "__main__":

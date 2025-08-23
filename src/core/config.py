@@ -11,6 +11,11 @@ class Settings(BaseSettings):
     db_port: int = 9000
     db_name: str = "restaurante_db"
     sql_echo: bool = True
+    
+    # Configuración JWT
+    secret_key: str = Field(default="your-secret-key-change-in-production-very-long-and-secure")
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
 
     @property
     def sync_dsn(self) -> str:

@@ -32,7 +32,8 @@ def init_db() -> None:
         bodega,
         denominacion_origen,
         enologo,
-        uva
+        uva,
+        user
     )
     
     # Create all tables
@@ -54,6 +55,14 @@ def _load_default_data() -> None:
             return
         
         print("🌱 Cargando datos por defecto...")
+        
+        # Crear usuario administrador por defecto
+        from src.auth.service import AuthService
+        hashed_password = AuthService.get_password_hash("admin123")
+        conn.execute(text("""
+            INSERT IGNORE INTO users (username, email, hashed_password, is_active, is_admin) VALUES
+            ('admin', 'admin@restaurant.com', :password, true, true)
+        """), {"password": hashed_password})
         
         # Categorías de platos por defecto
         conn.execute(text("""
@@ -135,6 +144,10 @@ def _load_default_data() -> None:
         
         conn.commit()
         print("✅ Datos por defecto cargados correctamente")
+        print("👤 Usuario administrador creado:")
+        print("   - Username: admin")
+        print("   - Password: admin123")
+        print("   - Email: admin@restaurant.com")
 
 def get_db():
     """Dependency to get database session"""

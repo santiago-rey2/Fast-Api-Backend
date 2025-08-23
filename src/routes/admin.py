@@ -6,6 +6,8 @@ from typing import List, Optional
 from sqlalchemy.orm import Session
 
 from ..database import get_db
+from ..auth.dependencies import get_current_admin_user
+from ..entities.user import User
 from ..entities.categoria_plato import CategoriaPlato as Categoria
 from ..entities.alergeno import Alergeno
 from ..entities.categoria_vino import CategoriaVino
@@ -31,6 +33,7 @@ router = APIRouter(prefix="/admin", tags=["Administración"])
 def get_categorias(
     skip: int = 0,
     limit: int = 100,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Obtener todas las categorías de platos"""
@@ -40,6 +43,7 @@ def get_categorias(
 @router.post("/categorias", response_model=CategoriaOut)
 def create_categoria(
     categoria: CategoriaCreate,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Crear una nueva categoría de platos"""
@@ -58,6 +62,7 @@ def create_categoria(
 def update_categoria(
     categoria_id: int,
     categoria: CategoriaUpdate,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Actualizar una categoría de platos"""
@@ -75,6 +80,7 @@ def update_categoria(
 @router.delete("/categorias/{categoria_id}")
 def delete_categoria(
     categoria_id: int,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Eliminar una categoría de platos"""
@@ -92,6 +98,7 @@ def delete_categoria(
 def get_alergenos(
     skip: int = 0,
     limit: int = 100,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Obtener todos los alérgenos"""
@@ -101,6 +108,7 @@ def get_alergenos(
 @router.post("/alergenos", response_model=AlerganoOut)
 def create_alergeno(
     alergeno: AlerganoCreate,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Crear un nuevo alérgeno"""
@@ -118,6 +126,7 @@ def create_alergeno(
 def update_alergeno(
     alergeno_id: int,
     alergeno: AlerganoUpdate,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Actualizar un alérgeno"""
@@ -135,6 +144,7 @@ def update_alergeno(
 @router.delete("/alergenos/{alergeno_id}")
 def delete_alergeno(
     alergeno_id: int,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Eliminar un alérgeno"""
@@ -152,6 +162,7 @@ def delete_alergeno(
 def get_categorias_vinos(
     skip: int = 0,
     limit: int = 100,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Obtener todas las categorías de vinos"""
@@ -161,6 +172,7 @@ def get_categorias_vinos(
 @router.post("/categorias-vinos", response_model=CategoriaVinoOut)
 def create_categoria_vino(
     categoria: CategoriaVinoCreate,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Crear una nueva categoría de vinos"""
@@ -178,6 +190,7 @@ def create_categoria_vino(
 def update_categoria_vino(
     categoria_id: int,
     categoria: CategoriaVinoUpdate,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Actualizar una categoría de vinos"""
@@ -195,6 +208,7 @@ def update_categoria_vino(
 @router.delete("/categorias-vinos/{categoria_id}")
 def delete_categoria_vino(
     categoria_id: int,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Eliminar una categoría de vinos"""
@@ -212,6 +226,7 @@ def delete_categoria_vino(
 def get_bodegas(
     skip: int = 0,
     limit: int = 100,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Obtener todas las bodegas"""
@@ -221,6 +236,7 @@ def get_bodegas(
 @router.post("/bodegas", response_model=BodegaOut)
 def create_bodega(
     bodega: BodegaCreate,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Crear una nueva bodega"""
@@ -238,6 +254,7 @@ def create_bodega(
 def update_bodega(
     bodega_id: int,
     bodega: BodegaUpdate,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Actualizar una bodega"""
@@ -255,6 +272,7 @@ def update_bodega(
 @router.delete("/bodegas/{bodega_id}")
 def delete_bodega(
     bodega_id: int,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Eliminar una bodega"""
@@ -272,6 +290,7 @@ def delete_bodega(
 def get_denominaciones_origen(
     skip: int = 0,
     limit: int = 100,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Obtener todas las denominaciones de origen"""
@@ -281,6 +300,7 @@ def get_denominaciones_origen(
 @router.post("/denominaciones-origen", response_model=DenominacionOrigenOut)
 def create_denominacion_origen(
     denominacion: DenominacionOrigenCreate,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Crear una nueva denominación de origen"""
@@ -298,6 +318,7 @@ def create_denominacion_origen(
 def update_denominacion_origen(
     denominacion_id: int,
     denominacion: DenominacionOrigenUpdate,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Actualizar una denominación de origen"""
@@ -315,6 +336,7 @@ def update_denominacion_origen(
 @router.delete("/denominaciones-origen/{denominacion_id}")
 def delete_denominacion_origen(
     denominacion_id: int,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Eliminar una denominación de origen"""
@@ -332,6 +354,7 @@ def delete_denominacion_origen(
 def get_enologos(
     skip: int = 0,
     limit: int = 100,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Obtener todos los enólogos"""
@@ -341,6 +364,7 @@ def get_enologos(
 @router.post("/enologos", response_model=EnologoOut)
 def create_enologo(
     enologo: EnologoCreate,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Crear un nuevo enólogo"""
@@ -358,6 +382,7 @@ def create_enologo(
 def update_enologo(
     enologo_id: int,
     enologo: EnologoUpdate,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Actualizar un enólogo"""
@@ -375,6 +400,7 @@ def update_enologo(
 @router.delete("/enologos/{enologo_id}")
 def delete_enologo(
     enologo_id: int,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Eliminar un enólogo"""
@@ -392,6 +418,7 @@ def delete_enologo(
 def get_uvas(
     skip: int = 0,
     limit: int = 100,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Obtener todas las uvas"""
@@ -401,6 +428,7 @@ def get_uvas(
 @router.post("/uvas", response_model=UvaOut)
 def create_uva(
     uva: UvaCreate,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Crear una nueva uva"""
@@ -418,6 +446,7 @@ def create_uva(
 def update_uva(
     uva_id: int,
     uva: UvaUpdate,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Actualizar una uva"""
@@ -435,6 +464,7 @@ def update_uva(
 @router.delete("/uvas/{uva_id}")
 def delete_uva(
     uva_id: int,
+    current_admin: User = Depends(get_current_admin_user),
     db: Session = Depends(get_db)
 ):
     """Eliminar una uva"""
