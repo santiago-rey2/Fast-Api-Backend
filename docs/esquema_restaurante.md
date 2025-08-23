@@ -7,7 +7,7 @@ Este modelo representa una base de datos relacional pensada para una API de gest
 
 ## 🗂️ Esquema General (Resumen ERD)
 
-```
+```text
 [Plato] --- (N:1) ---> [CategoriaPlato]
    |
    |--< (N:M) >-- [PlatoAlergeno] -- (N:1) --> [Alergeno]

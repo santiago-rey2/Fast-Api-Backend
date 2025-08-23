@@ -1,0 +1,62 @@
+# Archivos y directorios a ignorar durante el build de Docker
+
+# Entorno virtual
+venv/
+env/
+.venv/
+
+# Archivos de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Archivos de desarrollo
+.git/
+.gitignore
+.env
+.env.local
+.env.development
+.env.test
+
+# Documentación
+docs/
+README.md
+*.md
+
+# Scripts de ejemplo y pruebas
+scripts-examples/
+test_*.py
+
+# Archivos temporales
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Docker
+Dockerfile
+docker-compose*.yml
+docker/
+
+# Backups
+*.bak
+*.backup
+
+# Archivos específicos del proyecto que no son necesarios en producción
+fastapi_restaurante_template/
+*.zip
+*.pdf

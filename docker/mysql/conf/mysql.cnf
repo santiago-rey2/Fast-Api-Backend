@@ -1,0 +1,35 @@
+[mysqld]
+# Configuración para FastAPI Restaurant Backend
+default-authentication-plugin=mysql_native_password
+
+# Configuración de caracteres
+character-set-server=utf8mb4
+collation-server=utf8mb4_unicode_ci
+
+# Configuración de SQL mode para permitir ID 0
+sql_mode=NO_AUTO_VALUE_ON_ZERO,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
+
+# Configuración de performance
+innodb_buffer_pool_size=256M
+innodb_log_file_size=64M
+innodb_flush_log_at_trx_commit=2
+innodb_flush_method=O_DIRECT
+
+# Configuración de conexiones
+max_connections=200
+wait_timeout=600
+interactive_timeout=600
+
+# Configuración de logs
+general_log=1
+general_log_file=/var/log/mysql/general.log
+log_error=/var/log/mysql/error.log
+slow_query_log=1
+slow_query_log_file=/var/log/mysql/slow.log
+long_query_time=2
+
+# Timezone
+default-time-zone='+00:00'
+
+[client]
+default-character-set=utf8mb4

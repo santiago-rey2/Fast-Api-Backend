@@ -1,0 +1,38 @@
+version: "3.9"
+services:
+  db:
+    image: mysql:8.0
+    container_name: restaurantdb
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: restaurantdb
+    ports:
+      - "9000:3306"
+    command: ["--default-authentication-plugin=mysql_native_password",
+              "--character-set-server=utf8mb4",
+              "--collation-server=utf8mb4_unicode_ci"]
+    volumes:
+      - db_data:/var/lib/mysql
+
+  api:
+    build: .
+    command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      APP_NAME: "Restaurante API"
+      ENV: "dev"
+      DB_USER: "root"
+      DB_PASSWORD: "123456"
+      DB_HOST: "db"
+      DB_PORT: 3306
+      DB_NAME: "restaurantdb"
+      SQL_ECHO: "false"
+    volumes:
+      - .:/code
+    working_dir: /code
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+
+volumes:
+  db_data:
