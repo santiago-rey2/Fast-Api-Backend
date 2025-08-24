@@ -7,10 +7,11 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 from src.core.config import settings
 from src.database import init_db
-from src.routes.platos import router as platos_router
-from src.routes.vinos import router as vinos_router
 from src.routes.admin import router as admin_router
 from src.routes.auth import router as auth_router
+from src.routes.admin_platos import router as admin_platos_router
+from src.routes.admin_vinos import router as admin_vinos_router
+from src.routes.public import router as public_router
 
 # Crear la aplicación FastAPI
 app = FastAPI(
@@ -91,15 +92,18 @@ async def root():
         "redoc": "/redoc",
         "environment": settings.env,
         "public_endpoints": {
-            "platos": "/api/v1/platos",
-            "vinos": "/api/v1/vinos"
+            "platos": "/api/v1/public/platos",
+            "vinos": "/api/v1/public/vinos",
+            "data_reference": "/api/v1/public"
         },
         "auth_endpoints": {
             "login": "/api/v1/auth/login",
             "register": "/api/v1/auth/register"
         },
         "admin_endpoints": {
-            "administration": "/api/v1/admin",
+            "general_administration": "/api/v1/admin",
+            "platos_management": "/api/v1/admin/platos",
+            "vinos_management": "/api/v1/admin/vinos",
             "user_management": "/api/v1/auth/users"
         }
     }
@@ -110,10 +114,11 @@ async def health_check():
     return {"status": "healthy", "environment": settings.env}
 
 # Incluir routers de la API
-app.include_router(platos_router, prefix="/api/v1")
-app.include_router(vinos_router, prefix="/api/v1")
+app.include_router(public_router, prefix="/api/v1")
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(admin_router, prefix="/api/v1")
+app.include_router(admin_platos_router, prefix="/api/v1")
+app.include_router(admin_vinos_router, prefix="/api/v1")
 
 if __name__ == "__main__":
     import uvicorn

@@ -1,6 +1,14 @@
 # 📚 Documentación FastAPI Restaurant Backend
 
-Bienvenido a la documentación completa del sistema de gestión para restaurantes. Esta documentación está organizada por temas para facilitar la navegación.
+<div align="center">
+
+![Documentation](https://img.shields.io/badge/Documentation-Complete-brightgreen?style=for-the-badge&logo=gitbook)
+![FastAPI](https://img.shields.io/badge/FastAPI-Framework-009688?style=for-the-badge&logo=fastapi)
+![MySQL](https://img.shields.io/badge/MySQL-Database-blue?style=for-the-badge&logo=mysql)
+
+</div>
+
+Bienvenido a la **documentación completa** del sistema de gestión para restaurantes. Esta documentación está organizada por temas para facilitar la navegación.
 
 ## 📖 Índice de Documentación
 
@@ -12,11 +20,8 @@ Bienvenido a la documentación completa del sistema de gestión para restaurante
 ### 🛡️ Administración del Sistema
 - **[Guía del Panel de Administración](admin-guide.md)** - Manual completo del panel admin con todos los endpoints
 
-### 📋 Documentación Técnica Avanzada
+### 📋 Documentación Técnica
 - **[Guía Detallada](guia-detallada.md)** - Documentación técnica completa del desarrollo
-- **[Guía Avanzada (PDF)](guia_backend_restaurante_avanzada.pdf)** - Documentación avanzada en formato PDF
-- **[Guía Detallada (PDF)](guia_backend_restaurante_detallada.pdf)** - Guía completa en formato PDF
-- **[Esquema Final (PDF)](guia_backend_restaurante_esquema_final.pdf)** - Documentación del esquema final
 
 ## 🚀 Enlaces Rápidos
 
@@ -33,38 +38,60 @@ Bienvenido a la documentación completa del sistema de gestión para restaurante
 
 ```
 docs/
-├── README.md                                     # Este índice
-├── admin-guide.md                               # Guía del panel de administración
-├── esquema_restaurante.md                       # Esquema de base de datos
-├── guia-detallada.md                           # Guía técnica detallada
-├── Modelo_Datos.svg                            # Diagrama visual del modelo
-├── Modelo_Datos.drawio                         # Diagrama editable
-├── guia_backend_restaurante_avanzada.pdf       # Documentación avanzada
-├── guia_backend_restaurante_detallada.pdf      # Guía detallada PDF
-└── guia_backend_restaurante_esquema_final.pdf  # Esquema final PDF
+├── README.md                   # Este índice
+├── admin-guide.md             # Guía del panel de administración
+├── esquema_restaurante.md     # Esquema de base de datos
+├── guia-detallada.md         # Guía técnica detallada
+├── Modelo_Datos.svg          # Diagrama visual del modelo
+└── Modelo_Datos.drawio       # Diagrama editable
 ```
 
 ## 🔧 Herramientas y Recursos
 
-### Scripts de Utilidad
+### Scripts de Gestión de Base de Datos
 Ubicados en `../scripts-examples/`:
-- `test_api.py` - Pruebas de endpoints
-- `test_imports.py` - Verificación de imports
-- `test_prices.py` - Validación de precios
-- `run_extraction.py` - Script de extracción de datos
-- `update_prices.py` - Actualización de precios
+- `setup_complete_database.py` - Configuración completa de la base de datos
+- `clear_database.py` - Limpieza y reseteo de la base de datos
+- `load_sample_data.py` - Carga de datos de ejemplo
+
+### Scripts de Utilidad de Base de Datos
+Ubicados en `../src/scripts/`:
+- `create_db.py` - Creación de base de datos
+- `seed.py` - Datos iniciales y semilla
 
 ### Datos de Ejemplo
 - `example_categorias.csv` - Categorías de ejemplo
 - `example_alergenos.csv` - Alérgenos de ejemplo
 - `example_bodegas.csv` - Bodegas de ejemplo
 
+## 🎯 Características del Sistema
+
+### Core del Backend
+- **FastAPI**: Framework moderno y rápido para APIs
+- **MySQL**: Base de datos relacional robusta
+- **JWT Authentication**: Sistema de autenticación seguro
+- **Soft Delete**: Eliminación lógica con posibilidad de restauración
+- **CRUD Completo**: Operaciones completas para todas las entidades
+
+### Panel de Administración
+- **Gestión de Platos**: Crear, editar, eliminar y restaurar platos
+- **Gestión de Vinos**: Control completo de inventario de vinos
+- **Gestión de Categorías**: Organización de platos y vinos
+- **Gestión de Alérgenos**: Control de restricciones alimentarias
+- **Carga Masiva CSV**: Importación de datos desde archivos CSV
+
+### Seguridad y Auditoría
+- **Campos de auditoría**: Seguimiento de creación, modificación y eliminación
+- **Autenticación JWT**: Tokens seguros para acceso administrativo
+- **CORS configurado**: Soporte para aplicaciones frontend
+- **Logs detallados**: Registro de operaciones del sistema
+
 ## 📞 Contacto y Soporte
 
 Si tienes preguntas sobre la documentación o necesitas ayuda adicional:
 
 1. **Issues de GitHub**: Abre un issue en el repositorio
-2. **Documentación técnica**: Consulta los archivos PDF para información detallada
+2. **Documentación técnica**: Consulta los archivos de documentación específicos
 3. **Ejemplos prácticos**: Revisa los scripts de ejemplo para casos de uso
 
 ---

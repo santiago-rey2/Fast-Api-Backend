@@ -15,9 +15,22 @@ from src.schemas.auth import (
 from src.entities.user import User
 from src.core.config import settings
 
-router = APIRouter(prefix="/auth", tags=["Autenticación"])
+router = APIRouter(
+    prefix="/auth", 
+    tags=["🔐 Autenticación y Usuarios"],
+    responses={
+        401: {"description": "No autorizado"},
+        403: {"description": "Permisos insuficientes"}
+    }
+)
 
-@router.post("/login", response_model=Token)
+@router.post(
+    "/login", 
+    response_model=Token,
+    summary="🔑 Iniciar sesión",
+    description="Autentica un usuario con username y password, devuelve un token JWT para acceso a endpoints protegidos.",
+    response_description="Token de acceso JWT"
+)
 async def login(
     login_data: LoginRequest,
     db: Session = Depends(get_db)
