@@ -7,7 +7,8 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 from src.core.config import settings
 from src.database import init_db
-from src.routes.menu_routes import router as menu_routes
+from src.routes.public import router as menu_routes
+from src.routes.admin import router as admin_routes
 
 # Crear la aplicación FastAPI
 app = FastAPI(
@@ -58,7 +59,8 @@ async def add_security_headers(request: Request, call_next):
     
     return response
 
-app.include_router(menu_routes)
+app.include_router(menu_routes, prefix="/api/v1")
+app.include_router(admin_routes, prefix="/api/v1")
 
 # Inicializar base de datos en desarrollo
 if settings.env == "dev":

@@ -118,7 +118,7 @@ def load_sample_platos(db):
             "precio": Decimal("8.50"),
             "descripcion": "Croquetas caseras con jamón ibérico de bellota",
             "categoria_id": categorias.get("Entrantes", 1),
-            "alergenos": ["Cereales que contienen gluten", "Leche", "Huevos"]
+            "alergenos": ["Gluten", "Leche", "Huevos"]
         },
         {
             "nombre": "Pulpo a la gallega",
@@ -162,7 +162,7 @@ def load_sample_platos(db):
             "precio": Decimal("20.00"),
             "descripcion": "Rabo de toro guisado lentamente con verduras y vino tinto",
             "categoria_id": categorias.get("Carnes", 7),
-            "alergenos": ["Dióxido de azufre y sulfitos"]
+            "alergenos": ["Sulfitos"]
         },
         
         # Postres
@@ -171,7 +171,7 @@ def load_sample_platos(db):
             "precio": Decimal("6.50"),
             "descripcion": "Torrija casera con canela y helado de vainilla artesanal",
             "categoria_id": categorias.get("Postres", 3),
-            "alergenos": ["Cereales que contienen gluten", "Leche", "Huevos"]
+            "alergenos": ["Gluten", "Leche", "Huevos"]
         },
         {
             "nombre": "Crema catalana",
