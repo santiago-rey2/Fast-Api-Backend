@@ -7,11 +7,7 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 from src.core.config import settings
 from src.database import init_db
-from src.routes.admin import router as admin_router
-from src.routes.auth import router as auth_router
-from src.routes.admin_platos import router as admin_platos_router
-from src.routes.admin_vinos import router as admin_vinos_router
-from src.routes.public import router as public_router
+from src.routes.menu_routes import router as menu_routes
 
 # Crear la aplicación FastAPI
 app = FastAPI(
@@ -62,6 +58,8 @@ async def add_security_headers(request: Request, call_next):
     
     return response
 
+app.include_router(menu_routes)
+
 # Inicializar base de datos en desarrollo
 if settings.env == "dev":
     try:
@@ -86,46 +84,6 @@ async def root():
     """Endpoint de bienvenida"""
     return {
         "message": "¡Bienvenido al API del Restaurante!",
-        "app_name": settings.app_name,
         "version": "1.0.0",
-        "docs": "/docs",
-        "redoc": "/redoc",
-        "environment": settings.env,
-        "public_endpoints": {
-            "platos": "/api/v1/public/platos",
-            "vinos": "/api/v1/public/vinos",
-            "data_reference": "/api/v1/public"
-        },
-        "auth_endpoints": {
-            "login": "/api/v1/auth/login",
-            "register": "/api/v1/auth/register"
-        },
-        "admin_endpoints": {
-            "general_administration": "/api/v1/admin",
-            "platos_management": "/api/v1/admin/platos",
-            "vinos_management": "/api/v1/admin/vinos",
-            "user_management": "/api/v1/auth/users"
-        }
+        "documentation": "/docs"
     }
-
-@app.get("/health")
-async def health_check():
-    """Endpoint de salud de la aplicación"""
-    return {"status": "healthy", "environment": settings.env}
-
-# Incluir routers de la API
-app.include_router(public_router, prefix="/api/v1")
-app.include_router(auth_router, prefix="/api/v1")
-app.include_router(admin_router, prefix="/api/v1")
-app.include_router(admin_platos_router, prefix="/api/v1")
-app.include_router(admin_vinos_router, prefix="/api/v1")
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(
-        "src.main:app", 
-        host="127.0.0.1",  # Cambiar a localhost específicamente
-        port=8000, 
-        reload=True,
-        log_level="info"
-    )
