@@ -23,6 +23,7 @@ class Plato(Base, AuditMixin):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     nombre: Mapped[str] = mapped_column(String(100), index=True)
     precio: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
+    precio_unidad: Mapped[Optional[str]] = mapped_column( String(20),nullable=True)
     descripcion: Mapped[Optional[str]] = mapped_column(Text)
     sugerencias: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False, index=True)
     categoria_id: Mapped[int] = mapped_column(

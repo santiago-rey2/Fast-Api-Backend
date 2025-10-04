@@ -60,6 +60,7 @@ class VinosService:
                 "id": vino.id,
                 "nombre": vino.nombre,
                 "precio": float(vino.precio) if vino.precio else None,
+                "precio_unidad": vino.precio_unidad,
                 "bodega": vino.bodega.nombre,
                 "uvas": uvas_nombres,
                 "enologo": enologo_nombre

@@ -236,39 +236,68 @@ def load_platos(db, data: List[Dict[str, Any]], categorias: Dict[str, CategoriaP
     print("🍽️ Cargando platos...")
     
     loaded_count = 0
+    skipped_count = 0
+    processed_names = set()  # Para evitar duplicados
+    
     for plato_data in data:
-        existing = db.query(Plato).filter_by(nombre=plato_data["nombre"]).first()
+        plato_nombre = plato_data["nombre"]
+        
+        # Evitar duplicados
+        if plato_nombre in processed_names:
+            print(f"⚠️ Plato duplicado omitido: '{plato_nombre}'")
+            skipped_count += 1
+            continue
+        
+        processed_names.add(plato_nombre)
+        
+        existing = db.query(Plato).filter_by(nombre=plato_nombre).first()
         if not existing:
             # Validar categoría
             categoria = categorias.get(plato_data["categoria"])
             if not categoria:
-                print(f"⚠️ Categoría '{plato_data['categoria']}' no encontrada para plato '{plato_data['nombre']}'")
+                print(f"❌ Categoría '{plato_data['categoria']}' no encontrada para plato '{plato_nombre}' - OMITIDO")
+                skipped_count += 1
                 continue
             
-            # Crear plato
-            plato = Plato(
-                nombre=plato_data["nombre"],
-                descripcion=plato_data.get("descripcion"),
-                precio=Decimal(str(plato_data["precio"])),
-                categoria_id=categoria.id,
-                sugerencias=plato_data.get("sugerencias", False),
-                is_active=plato_data.get("is_active", True)
-            )
-            
-            # Agregar alérgenos
-            plato_alergenos = plato_data.get("alergenos", [])
-            for alergeno_nombre in plato_alergenos:
-                alergeno = alergenos.get(alergeno_nombre)
-                if alergeno:
-                    plato.alergenos.append(alergeno)
-                else:
-                    print(f"⚠️ Alérgeno '{alergeno_nombre}' no encontrado")
-            
-            db.add(plato)
-            loaded_count += 1
+            try:
+                # Crear plato
+                plato = Plato(
+                    nombre=plato_nombre,
+                    descripcion=plato_data.get("descripcion"),
+                    precio=Decimal(str(plato_data["precio"])),
+                    precio_unidad=plato_data.get("precio_unidad"),
+                    categoria_id=categoria.id,
+                    sugerencias=plato_data.get("sugerencias", False),
+                    is_active=plato_data.get("is_active", True)
+                )
+                
+                # Agregar alérgenos con mapeo mejorado
+                plato_alergenos = plato_data.get("alergenos", [])
+                for alergeno_nombre in plato_alergenos:
+                    # Mapeo de nombres inconsistentes
+                    alergeno_mapped = mapear_alergeno_nombre(alergeno_nombre)
+                    alergeno = alergenos.get(alergeno_mapped)
+                    
+                    if alergeno:
+                        plato.alergenos.append(alergeno)
+                    else:
+                        print(f"⚠️ Alérgeno '{alergeno_nombre}' (mapeado: '{alergeno_mapped}') no encontrado para plato '{plato_nombre}'")
+                
+                db.add(plato)
+                loaded_count += 1
+                
+                # Debug info
+                print(f"✅ Plato agregado: '{plato_nombre}' - Precio: {plato.precio} - Categoría: {categoria.nombre}")
+                
+            except Exception as e:
+                print(f"❌ Error al crear plato '{plato_nombre}': {e}")
+                skipped_count += 1
+        else:
+            print(f"ℹ️ Plato ya existe: '{plato_nombre}'")
+            skipped_count += 1
     
     db.commit()
-    print(f"✅ {loaded_count} platos cargados")
+    print(f"✅ {loaded_count} platos cargados, {skipped_count} omitidos")
 
 def load_vinos(db, data: List[Dict[str, Any]], categorias: Dict[str, CategoriaVino], 
                bodegas: Dict[str, Bodega], denominaciones: Dict[str, DenominacionOrigen],
@@ -277,93 +306,113 @@ def load_vinos(db, data: List[Dict[str, Any]], categorias: Dict[str, CategoriaVi
     print("🍷 Cargando vinos...")
     
     loaded_count = 0
+    skipped_count = 0
+    processed_wines = set()  # Para manejar duplicados por nombre+precio+unidad
+    
     for vino_data in data:
-        existing = db.query(Vino).filter_by(nombre=vino_data["nombre"]).first()
+        # Crear clave única para detectar duplicados
+        wine_key = f"{vino_data['nombre']}_{vino_data['precio']}_{vino_data.get('precio_unidad', '')}"
+        
+        if wine_key in processed_wines:
+            print(f"⚠️ Vino duplicado omitido: '{vino_data['nombre']}' ({vino_data['precio']} {vino_data.get('precio_unidad', '')})")
+            skipped_count += 1
+            continue
+        
+        processed_wines.add(wine_key)
+        
+        # Buscar por nombre, precio y unidad para evitar duplicados reales
+        existing = db.query(Vino).filter_by(
+            nombre=vino_data["nombre"],
+            precio=Decimal(str(vino_data["precio"])),
+            precio_unidad=vino_data.get("precio_unidad")
+        ).first()
+        
         if not existing:
             # Validar relaciones obligatorias
             categoria = categorias.get(vino_data["categoria"])
-            bodega = bodegas.get(vino_data["bodega"])
-            
             if not categoria:
-                print(f"⚠️ Categoría '{vino_data['categoria']}' no encontrada para vino '{vino_data['nombre']}'")
+                print(f"❌ Categoría '{vino_data['categoria']}' no encontrada para vino '{vino_data['nombre']}' - OMITIDO")
+                skipped_count += 1
                 continue
+            
+            bodega = bodegas.get(vino_data["bodega"])
             if not bodega:
-                print(f"⚠️ Bodega '{vino_data['bodega']}' no encontrada para vino '{vino_data['nombre']}'")
+                print(f"❌ Bodega '{vino_data['bodega']}' no encontrada para vino '{vino_data['nombre']}' - OMITIDO")
+                skipped_count += 1
                 continue
             
-            # Validar denominación (opcional)
-            denominacion = None
-            if vino_data.get("denominacion"):
-                denominacion = denominaciones.get(vino_data["denominacion"])
-                if not denominacion:
-                    print(f"⚠️ Denominación '{vino_data['denominacion']}' no encontrada para vino '{vino_data['nombre']}'")
-            
-            # Crear vino
-            vino = Vino(
-                nombre=vino_data["nombre"],
-                precio=Decimal(str(vino_data["precio"])),
-                categoria_id=categoria.id,
-                bodega_id=bodega.id,
-                denominacion_origen_id=denominacion.id if denominacion else None,
-                is_active=vino_data.get("is_active", True)
-            )
-            
-            # Agregar enólogo (opcional)
-            if vino_data.get("enologo"):
-                enologo = enologos.get(vino_data["enologo"])
-                if enologo:
-                    vino.enologo_id = enologo.id
-                else:
-                    print(f"⚠️ Enólogo '{vino_data['enologo']}' no encontrado")
-            
-            # Agregar uvas
-            vino_uvas = vino_data.get("uvas", [])
-            for uva_nombre in vino_uvas:
-                uva = uvas.get(uva_nombre)
-                if uva:
-                    vino.uvas.append(uva)
-                else:
-                    print(f"⚠️ Uva '{uva_nombre}' no encontrada")
-            
-            db.add(vino)
-            loaded_count += 1
+            try:
+                # Validar denominación (opcional)
+                denominacion = None
+                if vino_data.get("denominacion"):
+                    denominacion = denominaciones.get(vino_data["denominacion"])
+                    if not denominacion:
+                        print(f"⚠️ Denominación '{vino_data['denominacion']}' no encontrada para vino '{vino_data['nombre']}' - continuando sin denominación")
+                
+                # Crear vino
+                vino = Vino(
+                    nombre=vino_data["nombre"],
+                    precio=Decimal(str(vino_data["precio"])),
+                    precio_unidad=vino_data.get("precio_unidad"),
+                    categoria_id=categoria.id,
+                    bodega_id=bodega.id,
+                    denominacion_origen_id=denominacion.id if denominacion else None,
+                    is_active=vino_data.get("is_active", True)
+                )
+                
+                # Agregar enólogo (opcional)
+                if vino_data.get("enologo"):
+                    enologo = enologos.get(vino_data["enologo"])
+                    if enologo:
+                        vino.enologo_id = enologo.id
+                    else:
+                        print(f"⚠️ Enólogo '{vino_data['enologo']}' no encontrado para vino '{vino_data['nombre']}'")
+                
+                # Agregar uvas
+                vino_uvas = vino_data.get("uvas", [])
+                for uva_nombre in vino_uvas:
+                    uva = uvas.get(uva_nombre)
+                    if uva:
+                        vino.uvas.append(uva)
+                    else:
+                        print(f"⚠️ Uva '{uva_nombre}' no encontrada para vino '{vino_data['nombre']}'")
+                
+                db.add(vino)
+                loaded_count += 1
+                
+                # Debug info
+                print(f"✅ Vino agregado: '{vino.nombre}' - Precio: {vino.precio} {vino.precio_unidad or ''} - Bodega: {bodega.nombre}")
+                
+            except Exception as e:
+                print(f"❌ Error al crear vino '{vino_data['nombre']}': {e}")
+                skipped_count += 1
+        else:
+            print(f"ℹ️ Vino ya existe: '{vino_data['nombre']}' ({vino_data['precio']} {vino_data.get('precio_unidad', '')})")
+            skipped_count += 1
     
     db.commit()
-    print(f"✅ {loaded_count} vinos cargados")
+    print(f"✅ {loaded_count} vinos cargados, {skipped_count} omitidos")
 
-def load_users(db, data: List[Dict[str, Any]]):
-    """Carga usuarios"""
-    print("👤 Cargando usuarios...")
+def mapear_alergeno_nombre(nombre_original: str) -> str:
+    """Mapea nombres de alérgenos inconsistentes"""
+    mapeo = {
+        "Gluten": "gluten",
+        "Huevos": "eggs", 
+        "Lácteos": "milk",
+        "Pescado": "fish",
+        "Crustáceos": "crustaceans",
+        "Frutos secos": "nuts",
+        "Soja": "soybeans",
+        "Sésamo": "sesame",
+        "Sulfitos": "sulphites",
+        "Apio": "celery",
+        "Mostaza": "mustard",
+        "Altramuces": "lupin",
+        "Moluscos": "molluscs",
+        "Cacahuetes": "peanuts"
+    }
     
-    loaded_count = 0
-    for user_data in data:
-        existing = db.query(User).filter_by(email=user_data["email"]).first()
-        if not existing:
-            # Generar hash de contraseña
-            password = user_data.get("password", "changeme123")  # Contraseña por defecto
-            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-            
-            # Crear usuario con contraseña hasheada
-            user = User(
-                email=user_data["email"],
-                username=user_data.get("username", user_data["email"].split("@")[0]),
-                hashed_password=hashed_password,
-                is_active=user_data.get("is_active", True)
-            )
-            
-            # Verificar si tiene campo is_admin
-            if hasattr(User, 'is_admin'):
-                user.is_admin = user_data.get("is_admin", False)
-            elif hasattr(User, 'is_superuser'):
-                user.is_superuser = user_data.get("is_superuser", False)
-            
-            db.add(user)
-            loaded_count += 1
-            print(f"📝 Usuario creado: {user.email} (contraseña: {password})")
-    
-    db.commit()
-    print(f"✅ {loaded_count} usuarios cargados")
-    print("⚠️ Nota: Las contraseñas no se establecieron. Configúralas manualmente.")
+    return mapeo.get(nombre_original, nombre_original.lower())
 
 def load_data_from_json(json_file_path: str):
     """Función principal para cargar datos desde JSON"""
@@ -381,7 +430,7 @@ def load_data_from_json(json_file_path: str):
     except json.JSONDecodeError as e:
         raise ValueError(f"Error al parsear JSON: {e}")
     
-    # Validar estructura
+    # Validar estructura básica
     required_sections = ["categorias_platos", "categorias_vinos", "alergenos"]
     for section in required_sections:
         if section not in data:
@@ -405,28 +454,37 @@ def load_data_from_json(json_file_path: str):
         enologos = {}
         uvas = {}
         
-        if "bodegas" in data:
+        if "bodegas" in data and data["bodegas"]:
             bodegas = load_bodegas(db, data["bodegas"])
-        if "denominaciones_origen" in data:
+        if "denominaciones_origen" in data and data["denominaciones_origen"]:
             denominaciones = load_denominaciones(db, data["denominaciones_origen"])
-        if "enologos" in data:
+        if "enologos" in data and data["enologos"]:
             enologos = load_enologos(db, data["enologos"])
-        if "uvas" in data:
+        if "uvas" in data and data["uvas"]:
             uvas = load_uvas(db, data["uvas"])
         
         # 3. Platos y vinos
-        if "platos" in data:
+        if "platos" in data and data["platos"]:
+            print(f"📊 Procesando {len(data['platos'])} platos...")
             load_platos(db, data["platos"], categorias_platos, alergenos)
         
-        if "vinos" in data:
+        if "vinos" in data and data["vinos"]:
+            print(f"📊 Procesando {len(data['vinos'])} vinos...")
             load_vinos(db, data["vinos"], categorias_vinos, bodegas, denominaciones, enologos, uvas)
         
         # 4. Usuarios (opcional)
-        if "users" in data:
+        if "users" in data and data["users"]:
             load_users(db, data["users"])
         
-        # Verificar resultados
-        print("\n📊 RESUMEN DE CARGA:")
+        # Verificar resultados finales
+        print("\n📊 RESUMEN FINAL DE CARGA:")
+        print(f"   📂 Categorías platos: {db.query(CategoriaPlato).count()}")
+        print(f"   🍷 Categorías vinos: {db.query(CategoriaVino).count()}")
+        print(f"   ⚠️  Alérgenos: {db.query(Alergeno).count()}")
+        print(f"   🏭 Bodegas: {db.query(Bodega).count()}")
+        print(f"   🎯 Denominaciones: {db.query(DenominacionOrigen).count()}")
+        print(f"   👨‍🔬 Enólogos: {db.query(Enologo).count()}")
+        print(f"   🍇 Uvas: {db.query(Uva).count()}")
         print(f"   🍽️  Platos: {db.query(Plato).count()}")
         print(f"   🍷 Vinos: {db.query(Vino).count()}")
         print(f"   👤 Usuarios: {db.query(User).count()}")
@@ -436,6 +494,8 @@ def load_data_from_json(json_file_path: str):
     except Exception as e:
         db.rollback()
         print(f"❌ Error durante la carga: {e}")
+        import traceback
+        traceback.print_exc()
         raise
     finally:
         db.close()

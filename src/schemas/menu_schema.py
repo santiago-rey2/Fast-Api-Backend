@@ -10,6 +10,7 @@ class PlatoResponse(BaseModel):
     nombre: str = Field(..., description="Nombre del plato")
     descripcion: Optional[str] = Field(None, description="Descripción del plato")
     precio: Optional[float] = Field(None, description="Precio del plato en euros")
+    precio_unidad: Optional[str] = Field(None, description="Unidad del precio, e.g., 'ración', 'Kg'")
     alergenos: List[str] = Field(default_factory=list, description="Lista de alérgenos")
 
 class PlatosGroupedResponse(BaseModel):

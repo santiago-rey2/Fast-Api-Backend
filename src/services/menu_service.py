@@ -66,6 +66,7 @@ class MenuService:
                 "nombre": plato.nombre,
                 "descripcion": plato.descripcion,
                 "precio": float(plato.precio) if plato.precio else None,
+                "precio_unidad": plato.precio_unidad,
                 "sugerencias": plato.sugerencias,
                 "alergenos": [alergeno.nombre for alergeno in plato.alergenos] if plato.alergenos else []
             }
