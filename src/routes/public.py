@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from src.database import get_db
 from src.repositories.menu_repository import MenuRepository
+from src.repositories.vinos_repository import VinosRepository
 from src.schemas.menu_schema import PlatosGroupedResponse
 from src.schemas.wines_schema import VinosGroupedResponse
 
@@ -66,7 +67,7 @@ async def get_platos(
     """
     try:
         menu_repo = MenuRepository(db)
-        platos_agrupados = menu_repo.get_platos_agrupados_por_categoria(
+        platos_agrupados = menu_repo.get_platos_public(
             categoria=categoria,
             sugerencias=sugerencias,
             precio_min=precio_min,
@@ -138,8 +139,8 @@ async def get_vinos(
     ```
     """
     try:
-        menu_repo = MenuRepository(db)
-        vinos_agrupados = menu_repo.get_vinos_agrupados_por_tipo_y_denominacion(
+        menu_repo = VinosRepository(db)
+        vinos_agrupados = menu_repo.get_vinos_public(
             tipo=tipo,
             denominacion=denominacion,
             precio_min=precio_min,
