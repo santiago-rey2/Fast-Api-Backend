@@ -21,6 +21,11 @@ async def get_platos(
         description="Filtrar por categoría específica (búsqueda parcial)",
         example="Entrantes"
     ),
+    sugerencias: Optional[bool] = Query(
+        None,
+        description="Filtrar Solo sugerencías (búsqueda parcial)",
+        example=True
+    ),
     precio_min: Optional[float] = Query(
         None, 
         ge=0,

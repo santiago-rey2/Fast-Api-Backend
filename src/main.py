@@ -66,9 +66,28 @@ app.include_router(admin_routes, prefix="/api/v1")
 if settings.env == "dev":
     try:
         init_db()
-        print("✅ Base de datos inicializada")
+        
+        # Cargar datos de ejemplo automáticamente desde el script
+        try:
+            import sys
+            from pathlib import Path
+            
+            # Agregar scripts-examples al path
+            scripts_path = Path("scripts-examples")
+            if scripts_path.exists():
+                sys.path.insert(0, str(scripts_path))
+                
+                # Importar y ejecutar la función de carga automática
+                from load_sample_data import load_sample_data_auto
+                load_sample_data_auto()
+                
+        except ImportError as e:
+            print(f"⚠️  No se pudo cargar el módulo de datos de ejemplo: {e}")
+        except Exception as sample_error:
+            print(f"⚠️  Error cargando datos de ejemplo: {sample_error}")
+                
     except Exception as e:
-        print(f"⚠️  Error inicializando base de datos: {e}")
+        print(f"Error inicializando BD: {e}")
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):

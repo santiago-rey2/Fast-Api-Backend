@@ -1,20 +1,17 @@
 #!/usr/bin/env python3
 """
-Script completo para resetear la base de datos y cargar datos de ejemplo.
+Script para configurar una base de datos completa con todos los datos por defecto
+necesarios para el funcionamiento del sistema de restaurante.
 
-Este script ejecuta en secuencia:
-1. Elimina todas las tablas existentes
-2. Recrea la estructura de la base de datos
-3. Carga datos por defecto (categorías, alérgenos, etc.)
-4. Crea usuario administrador
-5. Carga datos de ejemplo (platos y vinos)
+Este script inicializa:
+- Tablas de la base de datos
+- Datos por defecto (categorías, alérgenos, etc.)
+- Datos de configuración inicial
 
 Uso:
     python scripts-examples/setup_complete_database.py
 """
-
 import sys
-import os
 from pathlib import Path
 
 # Agregar el directorio raíz al path para importar módulos
@@ -22,9 +19,10 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 try:
-    from sqlalchemy import create_engine, text, inspect
+    from sqlalchemy import create_engine, text
+    from sqlalchemy.orm import sessionmaker
     from src.core.config import settings
-    from src.database import Base, init_db, _load_default_data
+    from src.database import Base, init_db
     from src.auth.service import AuthService
 except ImportError as e:
     print(f"❌ Error de importación: {e}")
@@ -34,266 +32,290 @@ except ImportError as e:
     print("   3. Tener configurada la base de datos en src/core/config.py")
     sys.exit(1)
 
-def clear_all_tables():
-    """Elimina todas las tablas de la base de datos"""
-    print("🗑️  Eliminando todas las tablas...")
-    
-    engine = create_engine(settings.sync_dsn, echo=False)
-    
-    with engine.connect() as conn:
-        try:
-            # Deshabilitar foreign key checks
-            conn.execute(text("SET FOREIGN_KEY_CHECKS = 0"))
-            
-            # Obtener todas las tablas
-            result = conn.execute(text("SHOW TABLES"))
-            tables = [row[0] for row in result.fetchall()]
-            
-            if tables:
-                print(f"   📋 Encontradas {len(tables)} tablas para eliminar")
-                
-                # Eliminar cada tabla
-                for table in tables:
-                    try:
-                        conn.execute(text(f"DROP TABLE IF EXISTS `{table}`"))
-                        print(f"   ✅ Eliminada: {table}")
-                    except Exception as e:
-                        print(f"   ❌ Error con {table}: {e}")
-                        return False
-                
-                # Verificar que no queden tablas
-                result = conn.execute(text("SHOW TABLES"))
-                remaining = [row[0] for row in result.fetchall()]
-                
-                if remaining:
-                    print(f"   ⚠️  Aún quedan tablas: {remaining}")
-                    return False
-                else:
-                    print("   🎉 Todas las tablas eliminadas exitosamente")
-            else:
-                print("   ℹ️  No hay tablas para eliminar")
-            
-            # Rehabilitar foreign key checks
-            conn.execute(text("SET FOREIGN_KEY_CHECKS = 1"))
-            conn.commit()
-            
-            return True
-            
-        except Exception as e:
-            print(f"❌ Error eliminando tablas: {e}")
-            return False
-
-def create_database_structure():
-    """Crea la estructura de la base de datos"""
-    print("🏗️  Creando estructura de la base de datos...")
+def setup_database():
+    """Configura la base de datos completa"""
+    print("🚀 Iniciando configuración completa de la base de datos...")
     
     try:
-        # Import all models to register them with Base.metadata
-        from src.entities import (
-            plato, vino, categoria_plato, categoria_vino,
-            alergeno, bodega, denominacion_origen, enologo, uva, user
-        )
-        # Also import the mixins to ensure they're loaded
-        from src.entities import mixins
-        
         engine = create_engine(settings.sync_dsn, echo=False)
+        SessionLocal = sessionmaker(bind=engine)
+        
+        # Crear todas las tablas
+        print("📋 Creando estructura de tablas...")
         Base.metadata.create_all(bind=engine)
-        print("✅ Estructura de tablas creada exitosamente")
-        return True
+        print("✅ Tablas creadas")
+        
+        # Cargar datos por defecto expandidos
+        load_extended_default_data(engine)
+        
+        print("🎉 ¡Base de datos configurada exitosamente!")
+        print("💡 Ahora puedes ejecutar:")
+        print("   - python scripts-examples/load_sample_data.py (para datos de ejemplo)")
+        print("   - uvicorn src.main:app --reload (para iniciar el servidor)")
         
     except Exception as e:
-        print(f"❌ Error creando estructura: {e}")
-        return False
+        print(f"❌ Error durante la configuración: {e}")
+        raise
 
-def load_default_data():
-    """Carga datos por defecto"""
-    print("📦 Cargando datos por defecto...")
-    
-    try:
-        _load_default_data()
-        print("✅ Datos por defecto cargados")
-        return True
+def load_extended_default_data(engine):
+    """Carga datos por defecto expandidos"""
+    with engine.connect() as conn:
+        # Configurar modo SQL para permitir ID 0
+        conn.execute(text("SET SESSION sql_mode = 'NO_AUTO_VALUE_ON_ZERO'"))
         
-    except Exception as e:
-        print(f"❌ Error cargando datos por defecto: {e}")
-        return False
-
-def create_admin_user():
-    """Crea usuario administrador"""
-    print("👤 Creando usuario administrador...")
-    
-    try:
-        from sqlalchemy.orm import sessionmaker
+        # Verificar si ya existen datos (para evitar duplicados)
+        result = conn.execute(text("SELECT COUNT(*) FROM categoria_platos"))
+        if result.scalar() > 0:
+            print("ℹ️  Los datos por defecto ya están cargados")
+            return
         
-        engine = create_engine(settings.sync_dsn, echo=False)
-        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-        db = SessionLocal()
+        print("🌱 Cargando datos por defecto expandidos...")
         
-        try:
-            auth_service = AuthService()
+        # === USUARIO ADMINISTRADOR ===
+        print("👤 Creando usuario administrador...")
+        hashed_password = AuthService.get_password_hash("admin123")
+        conn.execute(text("""
+            INSERT IGNORE INTO users (username, email, hashed_password, is_active, is_admin) VALUES
+            ('admin', 'admin@restaurant.com', :password, true, true)
+        """), {"password": hashed_password})
+        
+        # === CATEGORÍAS DE PLATOS EXPANDIDAS ===
+        print("📂 Cargando categorías de platos...")
+        conn.execute(text("""
+            INSERT IGNORE INTO categoria_platos (id, nombre) VALUES
+            (0, 'Sin categoría'),
+            (1, 'Entrantes'),
+            (2, 'Principales'), 
+            (3, 'Postres'),
+            (4, 'Ensaladas'),
+            (5, 'Tapas'),
+            (6, 'Arroces'),
+            (7, 'Carnes'),
+            (8, 'Pescados'),
+            (9, 'Mariscos'),
+            (10, 'Sopas'),
+            (11, 'Verduras'),
+            (12, 'Pasta'),
+            (13, 'Quesos'),
+            (14, 'Aperitivos')
+        """))
+        
+        # === ALÉRGENOS SEGÚN LEY ESPAÑOLA ===
+        print("🚨 Cargando alérgenos oficiales...")
+        conn.execute(text("""
+            INSERT IGNORE INTO alergenos (id, nombre) VALUES
+            (0, 'Sin alérgenos'),
+            (1, 'Gluten'),
+            (2, 'Crustáceos'),
+            (3, 'Huevos'),
+            (4, 'Pescado'),
+            (5, 'Cacahuetes'),
+            (6, 'Soja'),
+            (7, 'Lácteos'),
+            (8, 'Frutos secos'),
+            (9, 'Apio'),
+            (10, 'Mostaza'),
+            (11, 'Sésamo'),
+            (12, 'Sulfitos'),
+            (13, 'Altramuces'),
+            (14, 'Moluscos')
+        """))
+        
+        # === CATEGORÍAS DE VINOS EXPANDIDAS ===
+        print("🍷 Cargando categorías de vinos...")
+        conn.execute(text("""
+            INSERT IGNORE INTO categoria_vinos (id, nombre) VALUES
+            (0, 'Sin categoría'),
+            (1, 'Tinto joven'),
+            (2, 'Tinto crianza'),
+            (3, 'Tinto reserva'),
+            (4, 'Tinto gran reserva'),
+            (5, 'Blanco joven'),
+            (6, 'Blanco crianza'),
+            (7, 'Blanco reserva'),
+            (8, 'Rosado'),
+            (9, 'Espumoso'),
+            (10, 'Dulce'),
+            (11, 'Generoso'),
+            (12, 'Licoroso'),
+            (13, 'Fortificado')
+        """))
+        
+        # === DENOMINACIONES DE ORIGEN ESPAÑOLAS ===
+        print("🏷️ Cargando denominaciones de origen...")
+        conn.execute(text("""
+            INSERT IGNORE INTO denominaciones_origen (id, nombre, region) VALUES
+            (0, 'Sin D.O.', 'Sin especificar'),
             
-            # Verificar si ya existe el usuario admin
-            existing_user = auth_service.get_user_by_username(db, "admin")
-            if existing_user:
-                print("ℹ️  Usuario administrador ya existe - usando el existente")
-                print(f"✅ Usuario administrador disponible: {existing_user.username}")
-                return True
+            -- Castilla y León
+            (1, 'D.O. Ribera del Duero', 'Castilla y León'),
+            (2, 'D.O. Rueda', 'Castilla y León'),
+            (3, 'D.O. Toro', 'Castilla y León'),
+            (4, 'D.O. Cigales', 'Castilla y León'),
+            (5, 'D.O. Bierzo', 'Castilla y León'),
             
-            # Si no existe, crear uno nuevo
-            admin_user = auth_service.create_user(
-                db=db,
-                username="admin",
-                email="admin@restaurant.com",
-                password="admin123",
-                is_admin=True
-            )
-            print(f"✅ Usuario administrador creado: {admin_user.username}")
-            return True
+            -- La Rioja
+            (6, 'D.O. Rioja', 'La Rioja'),
             
-        finally:
-            db.close()
-        
-    except Exception as e:
-        print(f"❌ Error creando usuario administrador: {e}")
-        return False
-
-def load_sample_data():
-    """Carga datos de ejemplo usando el script existente"""
-    print("🎭 Cargando datos de ejemplo...")
-    
-    try:
-        # Importar el módulo de carga de datos de ejemplo
-        import importlib.util
-        
-        # Cargar el módulo load_sample_data
-        spec = importlib.util.spec_from_file_location("load_sample_data", 
-                                                     project_root / "scripts-examples" / "load_sample_data.py")
-        sample_module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(sample_module)
-        
-        # Ejecutar la función main del módulo
-        sample_module.main()
-        return True
-        
-    except Exception as e:
-        print(f"❌ Error cargando datos de ejemplo: {e}")
-        return False
-
-def verify_setup():
-    """Verifica que el setup se haya completado correctamente"""
-    print("\n🔍 Verificando setup completo...")
-    
-    engine = create_engine(settings.sync_dsn, echo=False)
-    
-    try:
-        with engine.connect() as conn:
-            # Verificar datos básicos
-            data_checks = [
-                ("categoria_platos", "SELECT COUNT(*) FROM categoria_platos"),
-                ("alergenos", "SELECT COUNT(*) FROM alergenos"),
-                ("categoria_vinos", "SELECT COUNT(*) FROM categoria_vinos"),
-                ("denominaciones_origen", "SELECT COUNT(*) FROM denominaciones_origen"),
-                ("uvas", "SELECT COUNT(*) FROM uvas"),
-                ("users", "SELECT COUNT(*) FROM users"),
-                ("platos", "SELECT COUNT(*) FROM platos"),
-                ("vinos", "SELECT COUNT(*) FROM vinos"),
-                ("bodegas", "SELECT COUNT(*) FROM bodegas"),
-                ("enologos", "SELECT COUNT(*) FROM enologos"),
-            ]
+            -- Cataluña
+            (7, 'D.O. Penedès', 'Cataluña'),
+            (8, 'D.O. Priorat', 'Cataluña'),
+            (9, 'D.O. Montsant', 'Cataluña'),
+            (10, 'D.O. Cava', 'Cataluña'),
             
-            print("📊 Verificación de datos:")
-            all_ok = True
-            for table_name, query in data_checks:
-                try:
-                    result = conn.execute(text(query))
-                    count = result.scalar()
-                    status = "✅" if count > 0 else "❌"
-                    print(f"   {status} {table_name}: {count} registros")
-                    if count == 0 and table_name in ["categoria_platos", "alergenos", "users"]:
-                        all_ok = False
-                except Exception as e:
-                    print(f"   ❌ Error verificando {table_name}: {e}")
-                    all_ok = False
+            -- Galicia
+            (11, 'D.O. Rías Baixas', 'Galicia'),
+            (12, 'D.O. Ribeiro', 'Galicia'),
+            (13, 'D.O. Valdeorras', 'Galicia'),
             
-            return all_ok
-                
-    except Exception as e:
-        print(f"❌ Error durante la verificación: {e}")
-        return False
+            -- Andalucía
+            (14, 'D.O. Jerez', 'Andalucía'),
+            (15, 'D.O. Montilla-Moriles', 'Andalucía'),
+            (16, 'D.O. Málaga', 'Andalucía'),
+            
+            -- Valencia
+            (17, 'D.O. Valencia', 'Valencia'),
+            (18, 'D.O. Utiel-Requena', 'Valencia'),
+            (19, 'D.O. Alicante', 'Valencia'),
+            
+            -- Aragón
+            (20, 'D.O. Somontano', 'Aragón'),
+            (21, 'D.O. Campo de Borja', 'Aragón'),
+            (22, 'D.O. Cariñena', 'Aragón'),
+            
+            -- Navarra
+            (23, 'D.O. Navarra', 'Navarra'),
+            
+            -- País Vasco
+            (24, 'D.O. Txakoli de Getaria', 'País Vasco'),
+            
+            -- Murcia
+            (25, 'D.O. Jumilla', 'Murcia'),
+            (26, 'D.O. Yecla', 'Murcia'),
+            
+            -- Castilla-La Mancha
+            (27, 'D.O. Valdepeñas', 'Castilla-La Mancha'),
+            (28, 'D.O. La Mancha', 'Castilla-La Mancha'),
+            
+            -- Extremadura
+            (29, 'D.O. Ribera del Guadiana', 'Extremadura'),
+            
+            -- Canarias
+            (30, 'D.O. Tacoronte-Acentejo', 'Canarias'),
+            
+            -- Otros
+            (31, 'V.T. Castilla', 'Vino de la Tierra'),
+            (32, 'V.T. Castilla y León', 'Vino de la Tierra')
+        """))
+        
+        # === VARIEDADES DE UVA ESPAÑOLAS ===
+        print("🍇 Cargando variedades de uva...")
+        conn.execute(text("""
+            INSERT IGNORE INTO uvas (id, nombre, tipo) VALUES
+            (0, 'Sin uva', 'Sin tipo'),
+            
+            -- Uvas tintas españolas
+            (1, 'Tempranillo', 'Tinta'),
+            (2, 'Garnacha', 'Tinta'),
+            (3, 'Monastrell', 'Tinta'),
+            (4, 'Bobal', 'Tinta'),
+            (5, 'Mencía', 'Tinta'),
+            (6, 'Graciano', 'Tinta'),
+            (7, 'Mazuelo', 'Tinta'),
+            (8, 'Cariñena', 'Tinta'),
+            (9, 'Tinta de Toro', 'Tinta'),
+            (10, 'Prieto Picudo', 'Tinta'),
+            
+            -- Uvas tintas internacionales
+            (11, 'Cabernet Sauvignon', 'Tinta'),
+            (12, 'Merlot', 'Tinta'),
+            (13, 'Syrah', 'Tinta'),
+            (14, 'Pinot Noir', 'Tinta'),
+            (15, 'Cabernet Franc', 'Tinta'),
+            
+            -- Uvas blancas españolas
+            (16, 'Albariño', 'Blanca'),
+            (17, 'Verdejo', 'Blanca'),
+            (18, 'Godello', 'Blanca'),
+            (19, 'Viura', 'Blanca'),
+            (20, 'Palomino', 'Blanca'),
+            (21, 'Pedro Ximénez', 'Blanca'),
+            (22, 'Airén', 'Blanca'),
+            (23, 'Macabeo', 'Blanca'),
+            (24, 'Xarel·lo', 'Blanca'),
+            (25, 'Parellada', 'Blanca'),
+            (26, 'Moscatel', 'Blanca'),
+            (27, 'Malvasía', 'Blanca'),
+            (28, 'Treixadura', 'Blanca'),
+            (29, 'Loureiro', 'Blanca'),
+            (30, 'Caiño', 'Blanca'),
+            
+            -- Uvas blancas internacionales
+            (31, 'Chardonnay', 'Blanca'),
+            (32, 'Sauvignon Blanc', 'Blanca'),
+            (33, 'Riesling', 'Blanca'),
+            (34, 'Gewürztraminer', 'Blanca'),
+            (35, 'Pinot Grigio', 'Blanca')
+        """))
+        
+        # === BODEGAS BASE PARA EMPEZAR ===
+        print("🏭 Cargando bodegas base...")
+        conn.execute(text("""
+            INSERT IGNORE INTO bodegas (id, nombre, region) VALUES
+            (0, 'Sin bodega', 'Sin región'),
+            (1, 'Marqués de Riscal', 'Rioja'),
+            (2, 'Vega Sicilia', 'Ribera del Duero'),
+            (3, 'Torres', 'Penedès'),
+            (4, 'Martín Códax', 'Rías Baixas'),
+            (5, 'González Byass', 'Jerez')
+        """))
+        
+        # === ENÓLOGOS BASE ===
+        print("👨‍🔬 Cargando enólogos base...")
+        conn.execute(text("""
+            INSERT IGNORE INTO enologos (id, nombre) VALUES
+            (0, 'Sin enólogo'),
+            (1, 'Francisco Hurtado de Amézaga'),
+            (2, 'Miguel Torres Maczassek'),
+            (3, 'Pablo Álvarez'),
+            (4, 'Mariano García'),
+            (5, 'Telmo Rodríguez')
+        """))
+        
+        conn.commit()
+        
+        print("✅ Datos por defecto expandidos cargados correctamente")
+        print("📊 Resumen de datos cargados:")
+        print("   - 15 categorías de platos")
+        print("   - 15 alérgenos oficiales")
+        print("   - 14 categorías de vinos")
+        print("   - 33 denominaciones de origen")
+        print("   - 36 variedades de uva")
+        print("   - 6 bodegas base")
+        print("   - 6 enólogos base")
+        print("")
+        print("👤 Usuario administrador creado:")
+        print("   - Username: admin")
+        print("   - Password: admin123")
+        print("   - Email: admin@restaurant.com")
 
 def main():
-    """Función principal que ejecuta el setup completo"""
-    print("=" * 70)
-    print("🚀 SETUP COMPLETO DE BASE DE DATOS")
-    print("=" * 70)
-    print()
-    print("Este script va a:")
-    print("  1. 🔥 ELIMINAR todos los datos existentes")
-    print("  2. 🏗️  Recrear la estructura de la base de datos")
-    print("  3. 🌱 Cargar datos por defecto (categorías, alérgenos, etc.)")
-    print("  4. 👤 Crear usuario administrador (admin/admin123)")
-    print("  5. 🎭 Cargar datos de ejemplo (platos y vinos realistas)")
-    print()
+    """Función principal"""
+    print("🔧 Configurador de Base de Datos del Restaurante")
+    print("=" * 50)
     
-    # Confirmar acción
-    response = input("⚠️  ¿Continuar? (y/N): ")
-    
+    response = input("¿Continuar con la configuración de la base de datos? (y/N): ")
     if response.lower() != 'y':
-        print("❌ Operación cancelada por el usuario")
-        sys.exit(0)
+        print("Operación cancelada")
+        return
     
-    print()
+    setup_database()
     
-    # Ejecutar pasos del setup
-    steps = [
-        ("Eliminar tablas existentes", clear_all_tables),
-        ("Crear estructura de BD", create_database_structure),
-        ("Cargar datos por defecto", load_default_data),
-        ("Crear usuario administrador", create_admin_user),
-        ("Cargar datos de ejemplo", load_sample_data),
-    ]
-    
-    for step_name, step_func in steps:
-        print(f"\n{'='*50}")
-        print(f"PASO: {step_name.upper()}")
-        print("="*50)
-        
-        if not step_func():
-            print(f"\n❌ Error en: {step_name}")
-            print("💥 Setup abortado")
-            sys.exit(1)
-    
-    # Verificar resultado
-    if verify_setup():
-        print("\n" + "="*70)
-        print("🎉 ¡SETUP COMPLETO EXITOSO!")
-        print("="*70)
-        print()
-        print("📊 Base de datos configurada con:")
-        print("   • ✅ Datos por defecto (categorías, alérgenos, etc.)")
-        print("   • ✅ Datos de ejemplo (platos y vinos realistas)")
-        print("   • ✅ Usuario administrador creado")
-        print()
-        print("🔐 Credenciales de administrador:")
-        print("   • Username: admin")
-        print("   • Password: admin123")
-        print("   • Role: admin")
-        print()
-        print("🚀 Para iniciar el servidor:")
-        print("   python -m uvicorn src.main:app --reload")
-        print()
-        print("📖 Documentación de la API:")
-        print("   http://localhost:8000/docs")
-        print()
-        print("🎯 Endpoints públicos (sin autenticación):")
-        print("   GET /api/v1/platos/ - Lista de platos")
-        print("   GET /api/v1/vinos/ - Lista de vinos")
-        print()
-        print("🔒 Endpoints protegidos (requieren autenticación admin):")
-        print("   POST/PUT/DELETE en todos los recursos")
-    else:
-        print("\n⚠️  Setup completado pero con algunos problemas en la verificación")
-        print("💡 Revisa los mensajes anteriores para más detalles")
+    print("")
+    print("🎯 Próximos pasos recomendados:")
+    print("1. Ejecutar: python scripts-examples/load_sample_data.py")
+    print("2. Iniciar servidor: uvicorn src.main:app --reload")
+    print("3. Visitar documentación: http://localhost:8000/docs")
 
 if __name__ == "__main__":
     main()

@@ -18,6 +18,7 @@ class MenuRepository:
     def get_platos_agrupados_por_categoria(
         self, 
         categoria: Optional[str] = None,
+        sugerencias: Optional[bool] = None,
         precio_min: Optional[float] = None,
         precio_max: Optional[float] = None
     ) -> Dict[str, List[Dict[str, Any]]]:
@@ -42,6 +43,9 @@ class MenuRepository:
         
         if precio_max is not None:
             filters.append(Plato.precio <= precio_max)
+
+        if sugerencias is not None:
+            filters.append(Plato.sugerencias == sugerencias)
         
         if filters:
             query = query.filter(and_(*filters))
@@ -66,6 +70,7 @@ class MenuRepository:
                 "nombre": plato.nombre,
                 "descripcion": plato.descripcion,
                 "precio": float(plato.precio) if plato.precio else None,
+                "sugerencias": plato.sugerencias,
                 "alergenos": alergenos_nombres
             }
             platos_agrupados[categoria_nombre].append(plato_dict)

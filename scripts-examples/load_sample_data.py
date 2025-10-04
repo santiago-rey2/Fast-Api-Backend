@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Script para cargar datos de ejemplo en la base de datos.
+Script para cargar un dataset completo de ejemplo en la base de datos.
 
 Este script carga datos de ejemplo realistas para platos y vinos,
-útil para desarrollo y testing.
+con al menos 50 platos y 80 vinos para testing completo.
 
 Prerrequisitos:
 - La base de datos debe estar inicializada con datos por defecto
@@ -11,10 +11,12 @@ Prerrequisitos:
 
 Uso:
     python scripts-examples/load_sample_data.py
+    
+O desde código:
+    from scripts_examples.load_sample_data import load_sample_data_auto
+    load_sample_data_auto()
 """
-
 import sys
-import os
 from pathlib import Path
 from decimal import Decimal
 from typing import List
@@ -52,325 +54,931 @@ def create_session():
     return SessionLocal()
 
 def load_sample_bodegas(db):
-    """Carga bodegas de ejemplo"""
+    """Carga bodegas de ejemplo expandidas"""
     print("🏭 Cargando bodegas de ejemplo...")
     
     bodegas_data = [
-        {"nombre": "Marqués de Riscal", "region": "La Rioja"},
-        {"nombre": "Vega Sicilia", "region": "Castilla y León"},
-        {"nombre": "Torres", "region": "Cataluña"},
-        {"nombre": "Martín Códax", "region": "Galicia"},
-        {"nombre": "González Byass", "region": "Andalucía"},
-        {"nombre": "Artadi", "region": "País Vasco"},
-        {"nombre": "Alvear", "region": "Andalucía"},
-        {"nombre": "Can Feixes", "region": "Cataluña"},
+        # Rioja
+        {"nombre": "Marqués de Riscal", "region": "Rioja"},
+        {"nombre": "López de Heredia", "region": "Rioja"},
+        {"nombre": "Muga", "region": "Rioja"},
+        {"nombre": "CVNE", "region": "Rioja"},
+        {"nombre": "Artadi", "region": "Rioja"},
+        
+        # Ribera del Duero
+        {"nombre": "Vega Sicilia", "region": "Ribera del Duero"},
+        {"nombre": "Pingus", "region": "Ribera del Duero"},
+        {"nombre": "Pesquera", "region": "Ribera del Duero"},
+        {"nombre": "Protos", "region": "Ribera del Duero"},
+        
+        # Penedès
+        {"nombre": "Torres", "region": "Penedès"},
+        {"nombre": "Jean León", "region": "Penedès"},
+        {"nombre": "Freixenet", "region": "Penedès"},
+        
+        # Rías Baixas
+        {"nombre": "Martín Códax", "region": "Rías Baixas"},
+        {"nombre": "Pazo de Señoráns", "region": "Rías Baixas"},
+        {"nombre": "Terras Gauda", "region": "Rías Baixas"},
+        
+        # Jerez
+        {"nombre": "Osborne", "region": "Jerez"},
+        {"nombre": "González Byass", "region": "Jerez"},
+        {"nombre": "Sandeman", "region": "Jerez"},
+        
+        # Rueda
+        {"nombre": "Marqués de Riscal Rueda", "region": "Rueda"},
+        {"nombre": "José Pariente", "region": "Rueda"},
+        
+        # Priorat
+        {"nombre": "Álvaro Palacios", "region": "Priorat"},
+        {"nombre": "Clos Mogador", "region": "Priorat"},
+        
+        # Otras regiones
+        {"nombre": "Marqués de Murrieta", "region": "Rioja"},
+        {"nombre": "Bodegas Bilbaínas", "region": "Rioja"},
+        {"nombre": "Campo Viejo", "region": "Rioja"},
     ]
     
-    bodegas_creadas = []
     for bodega_data in bodegas_data:
-        # Verificar si ya existe
-        existing = db.query(Bodega).filter(Bodega.nombre == bodega_data["nombre"]).first()
+        existing = db.query(Bodega).filter_by(nombre=bodega_data["nombre"]).first()
         if not existing:
             bodega = Bodega(**bodega_data)
             db.add(bodega)
-            bodegas_creadas.append(bodega_data["nombre"])
     
     db.commit()
-    print(f"✅ {len(bodegas_creadas)} bodegas creadas")
+    print("✅ Bodegas cargadas")
 
 def load_sample_enologos(db):
-    """Carga enólogos de ejemplo"""
+    """Carga enólogos de ejemplo expandidos"""
     print("👨‍🔬 Cargando enólogos de ejemplo...")
     
     enologos_data = [
-        {"nombre": "Miguel Torres Maczassek", "experiencia_anos": 35},
-        {"nombre": "Álvaro Palacios", "experiencia_anos": 30},
-        {"nombre": "Telmo Rodríguez", "experiencia_anos": 28},
-        {"nombre": "Mariano García", "experiencia_anos": 45},
-        {"nombre": "Josep Lluís Pérez", "experiencia_anos": 40},
-        {"nombre": "Rafael Palacios", "experiencia_anos": 25},
+        {"nombre": "Francisco Hurtado de Amézaga"},
+        {"nombre": "Miguel Torres Maczassek"},
+        {"nombre": "Pablo Álvarez"},
+        {"nombre": "Lucía Soto"},
+        {"nombre": "Antonio Flores"},
+        {"nombre": "María Vargas"},
+        {"nombre": "Rafael Cambra"},
+        {"nombre": "Alvaro Palacios"},
+        {"nombre": "Mariano García"},
+        {"nombre": "Telmo Rodríguez"},
+        {"nombre": "Ricardo Pérez"},
+        {"nombre": "Isabel Mijares"},
+        {"nombre": "Jorge Ordóñez"},
+        {"nombre": "Raúl Pérez"},
+        {"nombre": "Victoria Torres"},
     ]
     
-    enologos_creados = []
     for enologo_data in enologos_data:
-        # Verificar si ya existe
-        existing = db.query(Enologo).filter(Enologo.nombre == enologo_data["nombre"]).first()
+        existing = db.query(Enologo).filter_by(nombre=enologo_data["nombre"]).first()
         if not existing:
             enologo = Enologo(**enologo_data)
             db.add(enologo)
-            enologos_creados.append(enologo_data["nombre"])
     
     db.commit()
-    print(f"✅ {len(enologos_creados)} enólogos creados")
+    print("✅ Enólogos cargados")
 
 def load_sample_platos(db):
-    """Carga platos de ejemplo"""
-    print("🍽️ Cargando platos de ejemplo...")
+    """Carga dataset completo de platos (50+)"""
+    print("🍽️ Cargando dataset completo de platos...")
     
-    # Obtener categorías y alérgenos
-    categorias = {cat.nombre: cat.id for cat in db.query(CategoriaPlato).all()}
-    alergenos = {alerg.nombre: alerg.id for alerg in db.query(Alergeno).all()}
+    # Obtener categorías y alérgenos existentes
+    categorias = {cat.nombre: cat for cat in db.query(CategoriaPlato).all()}
+    alergenos = {alerg.nombre: alerg for alerg in db.query(Alergeno).all()}
     
     platos_data = [
-        # Entrantes
+        # === ENTRANTES ===
         {
-            "nombre": "Croquetas de jamón ibérico",
-            "precio": Decimal("8.50"),
-            "descripcion": "Croquetas caseras con jamón ibérico de bellota",
-            "categoria_id": categorias.get("Entrantes", 1),
-            "alergenos": ["Gluten", "Leche", "Huevos"]
+            "nombre": "Ensalada César",
+            "descripcion": "Lechuga romana, queso parmesano, crutones y salsa césar",
+            "precio": Decimal("12.50"),
+            "categoria": "Entrantes",
+            "sugerencias": True,
+            "alergenos": ["Gluten", "Huevos", "Lácteos"]
         },
         {
-            "nombre": "Pulpo a la gallega",
-            "precio": Decimal("16.00"),
-            "descripcion": "Pulpo cocido con patatas, pimentón dulce y aceite de oliva",
-            "categoria_id": categorias.get("Entrantes", 1),
+            "nombre": "Jamón Ibérico de Bellota",
+            "descripcion": "Selección de jamón ibérico de bellota cortado a cuchillo",
+            "precio": Decimal("18.90"),
+            "categoria": "Entrantes", 
+            "sugerencias": True,
+            "alergenos": []
+        },
+        {
+            "nombre": "Croquetas de Jamón",
+            "descripcion": "Croquetas caseras de jamón ibérico (6 unidades)",
+            "precio": Decimal("9.50"),
+            "categoria": "Entrantes",
+            "sugerencias": False,
+            "alergenos": ["Gluten", "Lácteos", "Huevos"]
+        },
+        {
+            "nombre": "Gazpacho Andaluz",
+            "descripcion": "Gazpacho tradicional con tomate, pepino y pimiento",
+            "precio": Decimal("7.80"),
+            "categoria": "Entrantes",
+            "sugerencias": False,
+            "alergenos": []
+        },
+        {
+            "nombre": "Pulpo a la Gallega",
+            "descripcion": "Pulpo cocido con patata, pimentón dulce y aceite de oliva",
+            "precio": Decimal("16.50"),
+            "categoria": "Entrantes",
+            "sugerencias": True,
             "alergenos": ["Moluscos"]
         },
         {
-            "nombre": "Tabla de quesos manchegos",
-            "precio": Decimal("12.50"),
-            "descripcion": "Selección de quesos curados de La Mancha con membrillo",
-            "categoria_id": categorias.get("Entrantes", 1),
-            "alergenos": ["Leche"]
-        },
-        
-        # Platos principales
-        {
-            "nombre": "Paella valenciana",
-            "precio": Decimal("18.00"),
-            "descripcion": "Arroz con pollo, conejo, garrofó, judía verde y azafrán",
-            "categoria_id": categorias.get("Arroces", 6),
-            "alergenos": []
+            "nombre": "Tortilla Española",
+            "descripcion": "Tortilla de patata tradicional con cebolla",
+            "precio": Decimal("8.90"),
+            "categoria": "Entrantes",
+            "sugerencias": False,
+            "alergenos": ["Huevos"]
         },
         {
-            "nombre": "Cochinillo asado",
-            "precio": Decimal("22.00"),
-            "descripcion": "Cochinillo segoviano asado en horno de leña",
-            "categoria_id": categorias.get("Carnes", 7),
-            "alergenos": []
+            "nombre": "Tabla de Quesos Manchegos",
+            "descripcion": "Selección de quesos manchegos curados con membrillo",
+            "precio": Decimal("14.50"),
+            "categoria": "Entrantes",
+            "sugerencias": True,
+            "alergenos": ["Lácteos"]
         },
         {
-            "nombre": "Lubina a la sal",
-            "precio": Decimal("19.50"),
-            "descripcion": "Lubina fresca cocinada en costra de sal marina",
-            "categoria_id": categorias.get("Pescados", 8),
-            "alergenos": ["Pescado"]
-        },
-        {
-            "nombre": "Rabo de toro estofado",
-            "precio": Decimal("20.00"),
-            "descripcion": "Rabo de toro guisado lentamente con verduras y vino tinto",
-            "categoria_id": categorias.get("Carnes", 7),
-            "alergenos": ["Sulfitos"]
-        },
-        
-        # Postres
-        {
-            "nombre": "Torrija con helado de vainilla",
-            "precio": Decimal("6.50"),
-            "descripcion": "Torrija casera con canela y helado de vainilla artesanal",
-            "categoria_id": categorias.get("Postres", 3),
-            "alergenos": ["Gluten", "Leche", "Huevos"]
-        },
-        {
-            "nombre": "Crema catalana",
-            "precio": Decimal("5.50"),
-            "descripcion": "Crema catalana tradicional con azúcar caramelizado",
-            "categoria_id": categorias.get("Postres", 3),
-            "alergenos": ["Leche", "Huevos"]
-        },
-        
-        # Tapas
-        {
-            "nombre": "Patatas bravas",
-            "precio": Decimal("4.50"),
-            "descripcion": "Patatas fritas con salsa brava y alioli",
-            "categoria_id": categorias.get("Tapas", 5),
+            "nombre": "Ensaladilla Rusa",
+            "descripcion": "Ensaladilla tradicional con mayonesa casera",
+            "precio": Decimal("8.50"),
+            "categoria": "Entrantes",
+            "sugerencias": False,
             "alergenos": ["Huevos"]
         },
         {
             "nombre": "Pimientos de Padrón",
-            "precio": Decimal("5.00"),
-            "descripcion": "Pimientos verdes fritos con sal gorda",
-            "categoria_id": categorias.get("Tapas", 5),
+            "descripcion": "Pimientos de Padrón fritos con sal gorda",
+            "precio": Decimal("6.80"),
+            "categoria": "Entrantes",
+            "sugerencias": False,
             "alergenos": []
+        },
+        {
+            "nombre": "Carpaccio de Ternera",
+            "descripcion": "Láminas de ternera con rúcula, parmesano y vinagreta",
+            "precio": Decimal("15.90"),
+            "categoria": "Entrantes",
+            "sugerencias": True,
+            "alergenos": ["Lácteos"]
+        },
+        {
+            "nombre": "Hummus con Crudités",
+            "descripcion": "Hummus casero con verduras crudas de temporada",
+            "precio": Decimal("9.20"),
+            "categoria": "Entrantes",
+            "sugerencias": False,
+            "alergenos": ["Sésamo"]
+        },
+        {
+            "nombre": "Ceviche de Corvina",
+            "descripcion": "Corvina marinada en lima con cebolla morada y cilantro",
+            "precio": Decimal("13.50"),
+            "categoria": "Entrantes",
+            "sugerencias": True,
+            "alergenos": ["Pescado"]
+        },
+        {
+            "nombre": "Burrata con Tomate",
+            "descripcion": "Burrata fresca con tomate de temporada y albahaca",
+            "precio": Decimal("12.80"),
+            "categoria": "Entrantes",
+            "sugerencias": False,
+            "alergenos": ["Lácteos"]
+        },
+        {
+            "nombre": "Patatas Bravas",
+            "descripcion": "Patatas fritas con salsa brava y alioli",
+            "precio": Decimal("7.50"),
+            "categoria": "Entrantes",
+            "sugerencias": False,
+            "alergenos": ["Huevos"]
+        },
+        {
+            "nombre": "Montadito de Salmón",
+            "descripcion": "Pan tostado con salmón ahumado, aguacate y eneldo",
+            "precio": Decimal("11.90"),
+            "categoria": "Entrantes",
+            "sugerencias": False,
+            "alergenos": ["Gluten", "Pescado"]
+        },
+
+        # === PRINCIPALES ===
+        {
+            "nombre": "Paella Valenciana",
+            "descripcion": "Arroz con pollo, conejo, judías verdes y garrofón",
+            "precio": Decimal("16.80"),
+            "categoria": "Principales",
+            "sugerencias": True,
+            "alergenos": []
+        },
+        {
+            "nombre": "Lubina a la Sal",
+            "descripcion": "Lubina fresca cocida en costra de sal con verduras de temporada",
+            "precio": Decimal("22.50"),
+            "categoria": "Principales",
+            "sugerencias": True,
+            "alergenos": ["Pescado"]
+        },
+        {
+            "nombre": "Solomillo de Ternera",
+            "descripcion": "Solomillo de ternera con salsa de setas y patatas panaderas",
+            "precio": Decimal("24.90"),
+            "categoria": "Principales",
+            "sugerencias": False,
+            "alergenos": ["Lácteos"]
+        },
+        {
+            "nombre": "Arroz Negro",
+            "descripcion": "Arroz con tinta de calamar, sepia y gambas",
+            "precio": Decimal("18.50"),
+            "categoria": "Principales",
+            "sugerencias": True,
+            "alergenos": ["Moluscos", "Crustáceos"]
+        },
+        {
+            "nombre": "Cochinillo Asado",
+            "descripcion": "Cochinillo asado tradicional con patatas al horno",
+            "precio": Decimal("26.80"),
+            "categoria": "Principales",
+            "sugerencias": True,
+            "alergenos": []
+        },
+        {
+            "nombre": "Bacalao al Pil Pil",
+            "descripcion": "Bacalao confitado en aceite de oliva con ajo y guindilla",
+            "precio": Decimal("19.90"),
+            "categoria": "Principales",
+            "sugerencias": True,
+            "alergenos": ["Pescado"]
+        },
+        {
+            "nombre": "Cordero Lechal Asado",
+            "descripcion": "Cordero lechal asado con hierbas aromáticas",
+            "precio": Decimal("23.50"),
+            "categoria": "Principales",
+            "sugerencias": False,
+            "alergenos": []
+        },
+        {
+            "nombre": "Rape a la Plancha",
+            "descripcion": "Rape a la plancha con verduras salteadas",
+            "precio": Decimal("21.90"),
+            "categoria": "Principales",
+            "sugerencias": False,
+            "alergenos": ["Pescado"]
+        },
+        {
+            "nombre": "Paella de Verduras",
+            "descripcion": "Arroz con verduras de temporada y alcachofas",
+            "precio": Decimal("14.50"),
+            "categoria": "Principales",
+            "sugerencias": False,
+            "alergenos": []
+        },
+        {
+            "nombre": "Entrecot a la Parrilla",
+            "descripcion": "Entrecot de ternera a la parrilla con pimientos asados",
+            "precio": Decimal("22.80"),
+            "categoria": "Principales",
+            "sugerencias": False,
+            "alergenos": []
+        },
+        {
+            "nombre": "Merluza en Salsa Verde",
+            "descripcion": "Merluza fresca en salsa verde con guisantes y espárragos",
+            "precio": Decimal("20.50"),
+            "categoria": "Principales",
+            "sugerencias": True,
+            "alergenos": ["Pescado"]
+        },
+        {
+            "nombre": "Rabo de Toro",
+            "descripcion": "Rabo de toro estofado con verduras y vino tinto",
+            "precio": Decimal("19.80"),
+            "categoria": "Principales",
+            "sugerencias": False,
+            "alergenos": []
+        },
+        {
+            "nombre": "Salmón a la Plancha",
+            "descripcion": "Salmón noruego con quinoa y verduras al vapor",
+            "precio": Decimal("21.50"),
+            "categoria": "Principales",
+            "sugerencias": False,
+            "alergenos": ["Pescado"]
+        },
+        {
+            "nombre": "Lentejas con Chorizo",
+            "descripcion": "Lentejas estofadas con chorizo y verduras",
+            "precio": Decimal("13.80"),
+            "categoria": "Principales",
+            "sugerencias": False,
+            "alergenos": []
+        },
+        {
+            "nombre": "Dorada al Horno",
+            "descripcion": "Dorada al horno con patatas y cebolla",
+            "precio": Decimal("18.90"),
+            "categoria": "Principales",
+            "sugerencias": False,
+            "alergenos": ["Pescado"]
+        },
+        {
+            "nombre": "Fabada Asturiana",
+            "descripcion": "Fabada tradicional con morcilla, chorizo y lacón",
+            "precio": Decimal("15.50"),
+            "categoria": "Principales",
+            "sugerencias": True,
+            "alergenos": []
+        },
+        {
+            "nombre": "Risotto de Setas",
+            "descripcion": "Risotto cremoso con setas de temporada y trufa",
+            "precio": Decimal("16.90"),
+            "categoria": "Principales",
+            "sugerencias": False,
+            "alergenos": ["Lácteos"]
+        },
+        {
+            "nombre": "Callos a la Madrileña",
+            "descripcion": "Callos tradicionales con garbanzos y chorizo",
+            "precio": Decimal("14.80"),
+            "categoria": "Principales",
+            "sugerencias": False,
+            "alergenos": []
+        },
+
+        # === POSTRES ===
+        {
+            "nombre": "Torrijas de la Abuela",
+            "descripcion": "Torrijas caseras con helado de vainilla y canela",
+            "precio": Decimal("6.50"),
+            "categoria": "Postres",
+            "sugerencias": True,
+            "alergenos": ["Gluten", "Huevos", "Lácteos"]
+        },
+        {
+            "nombre": "Flan de Huevo",
+            "descripcion": "Flan casero con caramelo líquido",
+            "precio": Decimal("5.80"),
+            "categoria": "Postres",
+            "sugerencias": False,
+            "alergenos": ["Huevos", "Lácteos"]
+        },
+        {
+            "nombre": "Tiramisu",
+            "descripcion": "Tiramisu tradicional italiano con café y mascarpone",
+            "precio": Decimal("7.20"),
+            "categoria": "Postres",
+            "sugerencias": True,
+            "alergenos": ["Gluten", "Huevos", "Lácteos"]
+        },
+        {
+            "nombre": "Crema Catalana",
+            "descripcion": "Crema catalana tradicional con azúcar quemado",
+            "precio": Decimal("6.80"),
+            "categoria": "Postres",
+            "sugerencias": True,
+            "alergenos": ["Huevos", "Lácteos"]
+        },
+        {
+            "nombre": "Tarta de Santiago",
+            "descripcion": "Tarta de almendra tradicional gallega",
+            "precio": Decimal("6.50"),
+            "categoria": "Postres",
+            "sugerencias": False,
+            "alergenos": ["Huevos", "Frutos secos"]
+        },
+        {
+            "nombre": "Cheesecake de Frutos Rojos",
+            "descripcion": "Tarta de queso con coulis de frutos rojos",
+            "precio": Decimal("7.50"),
+            "categoria": "Postres",
+            "sugerencias": False,
+            "alergenos": ["Gluten", "Lácteos", "Huevos"]
+        },
+        {
+            "nombre": "Helado Artesanal",
+            "descripcion": "Selección de helados artesanales (3 bolas)",
+            "precio": Decimal("5.90"),
+            "categoria": "Postres",
+            "sugerencias": False,
+            "alergenos": ["Lácteos"]
+        },
+        {
+            "nombre": "Brownie con Helado",
+            "descripcion": "Brownie de chocolate con helado de vainilla",
+            "precio": Decimal("7.80"),
+            "categoria": "Postres",
+            "sugerencias": False,
+            "alergenos": ["Gluten", "Huevos", "Lácteos"]
+        },
+        {
+            "nombre": "Natillas Caseras",
+            "descripcion": "Natillas tradicionales con canela y galleta",
+            "precio": Decimal("5.50"),
+            "categoria": "Postres",
+            "sugerencias": False,
+            "alergenos": ["Huevos", "Lácteos", "Gluten"]
+        },
+        {
+            "nombre": "Coulant de Chocolate",
+            "descripcion": "Coulant de chocolate negro con corazón fundido",
+            "precio": Decimal("8.20"),
+            "categoria": "Postres",
+            "sugerencias": True,
+            "alergenos": ["Gluten", "Huevos", "Lácteos"]
+        },
+        {
+            "nombre": "Tarta de Manzana",
+            "descripcion": "Tarta de manzana tradicional con canela",
+            "precio": Decimal("6.90"),
+            "categoria": "Postres",
+            "sugerencias": False,
+            "alergenos": ["Gluten", "Huevos", "Lácteos"]
+        },
+        {
+            "nombre": "Panna Cotta",
+            "descripcion": "Panna cotta de vainilla con coulis de frutos rojos",
+            "precio": Decimal("6.80"),
+            "categoria": "Postres",
+            "sugerencias": False,
+            "alergenos": ["Lácteos"]
         }
     ]
     
-    platos_creados = []
     for plato_data in platos_data:
-        # Verificar si ya existe
-        existing = db.query(Plato).filter(Plato.nombre == plato_data["nombre"]).first()
+        existing = db.query(Plato).filter_by(nombre=plato_data["nombre"]).first()
         if not existing:
-            # Separar alérgenos del resto de datos
-            alergenos_nombres = plato_data.pop("alergenos", [])
+            # Obtener categoría
+            categoria = categorias.get(plato_data["categoria"])
+            if not categoria:
+                print(f"⚠️ Categoría '{plato_data['categoria']}' no encontrada para plato '{plato_data['nombre']}'")
+                continue
             
             # Crear plato
-            plato = Plato(**plato_data)
-            db.add(plato)
-            db.flush()  # Para obtener el ID
+            plato = Plato(
+                nombre=plato_data["nombre"],
+                descripcion=plato_data["descripcion"],
+                precio=plato_data["precio"],
+                categoria_id=categoria.id,
+                sugerencias=plato_data["sugerencias"]
+            )
             
             # Agregar alérgenos
-            for alergeno_nombre in alergenos_nombres:
-                alergeno_id = alergenos.get(alergeno_nombre)
-                if alergeno_id:
-                    alergeno = db.query(Alergeno).get(alergeno_id)
-                    if alergeno:
-                        plato.alergenos.append(alergeno)
+            for alergeno_nombre in plato_data["alergenos"]:
+                alergeno = alergenos.get(alergeno_nombre)
+                if alergeno:
+                    plato.alergenos.append(alergeno)
+                else:
+                    print(f"⚠️ Alérgeno '{alergeno_nombre}' no encontrado")
             
-            platos_creados.append(plato_data["nombre"])
+            db.add(plato)
     
     db.commit()
-    print(f"✅ {len(platos_creados)} platos creados")
+    print("✅ Platos cargados")
 
 def load_sample_vinos(db):
-    """Carga vinos de ejemplo"""
-    print("🍷 Cargando vinos de ejemplo...")
+    """Carga dataset completo de vinos (80+)"""
+    print("🍷 Cargando dataset completo de vinos...")
     
-    # Obtener datos de referencia
-    categorias = {cat.nombre: cat.id for cat in db.query(CategoriaVino).all()}
-    bodegas = {bod.nombre: bod.id for bod in db.query(Bodega).all()}
-    denominaciones = {do.nombre: do.id for do in db.query(DenominacionOrigen).all()}
-    enologos = {enol.nombre: enol.id for enol in db.query(Enologo).all()}
-    uvas = {uva.nombre: uva.id for uva in db.query(Uva).all()}
+    # Obtener datos relacionados existentes
+    categorias = {cat.nombre: cat for cat in db.query(CategoriaVino).all()}
+    bodegas = {bod.nombre: bod for bod in db.query(Bodega).all()}
+    denominaciones = {den.nombre: den for den in db.query(DenominacionOrigen).all()}
+    enologos = {eno.nombre: eno for eno in db.query(Enologo).all()}
+    uvas = {uva.nombre: uva for uva in db.query(Uva).all()}
     
     vinos_data = [
-        {
-            "nombre": "Marqués de Riscal Reserva",
-            "precio": Decimal("15.50"),
-            "categoria_id": categorias.get("Tinto reserva", 3),
-            "bodega_id": bodegas.get("Marqués de Riscal"),
-            "denominacion_origen_id": denominaciones.get("D.O. Rioja", 1),
-            "enologo_id": None,
-            "uvas": ["Tempranillo", "Garnacha"]
-        },
-        {
-            "nombre": "Vega Sicilia Único",
-            "precio": Decimal("320.00"),
-            "categoria_id": categorias.get("Tinto gran reserva", 4),
-            "bodega_id": bodegas.get("Vega Sicilia"),
-            "denominacion_origen_id": denominaciones.get("D.O. Ribera del Duero", 2),
-            "enologo_id": enologos.get("Mariano García"),
-            "uvas": ["Tempranillo", "Cabernet Sauvignon", "Merlot"]
-        },
+        # === TINTOS JÓVENES ===
         {
             "nombre": "Torres Sangre de Toro",
             "precio": Decimal("8.90"),
-            "categoria_id": categorias.get("Tinto joven", 1),
-            "bodega_id": bodegas.get("Torres"),
-            "denominacion_origen_id": denominaciones.get("D.O. Penedès", 3),
-            "enologo_id": enologos.get("Miguel Torres Maczassek"),
+            "categoria": "Tinto joven",
+            "bodega": "Torres",
+            "denominacion": "D.O. Penedès",
+            "enologo": "Miguel Torres Maczassek",
             "uvas": ["Garnacha", "Monastrell"]
         },
         {
-            "nombre": "Martín Códax Albariño",
-            "precio": Decimal("12.50"),
-            "categoria_id": categorias.get("Blanco joven", 5),
-            "bodega_id": bodegas.get("Martín Códax"),
-            "denominacion_origen_id": denominaciones.get("D.O. Rías Baixas", 4),
-            "enologo_id": None,
-            "uvas": ["Albariño"]
+            "nombre": "Campo Viejo Tempranillo",
+            "precio": Decimal("7.50"),
+            "categoria": "Tinto joven",
+            "bodega": "Campo Viejo",
+            "denominacion": "D.O. Rioja",
+            "enologo": "Antonio Flores",
+            "uvas": ["Tempranillo"]
         },
         {
-            "nombre": "González Byass Tío Pepe",
-            "precio": Decimal("9.50"),
-            "categoria_id": categorias.get("Generoso", 10),
-            "bodega_id": bodegas.get("González Byass"),
-            "denominacion_origen_id": denominaciones.get("D.O. Jerez", 5),
-            "enologo_id": None,
-            "uvas": ["Albariño"]  # Usando Albariño como proxy para Palomino
+            "nombre": "Protos Joven",
+            "precio": Decimal("9.20"),
+            "categoria": "Tinto joven",
+            "bodega": "Protos",
+            "denominacion": "D.O. Ribera del Duero",
+            "enologo": "Mariano García",
+            "uvas": ["Tempranillo"]
+        },
+        {
+            "nombre": "CVNE Viña Real Crianza",
+            "precio": Decimal("12.80"),
+            "categoria": "Tinto joven",
+            "bodega": "CVNE",
+            "denominacion": "D.O. Rioja",
+            "enologo": "María Vargas",
+            "uvas": ["Tempranillo", "Mazuelo"]
+        },
+
+        # === TINTOS CRIANZA ===
+        {
+            "nombre": "Marqués de Riscal Reserva",
+            "precio": Decimal("15.90"),
+            "categoria": "Tinto crianza",
+            "bodega": "Marqués de Riscal",
+            "denominacion": "D.O. Rioja",
+            "enologo": "Francisco Hurtado de Amézaga",
+            "uvas": ["Tempranillo", "Mazuelo"]
+        },
+        {
+            "nombre": "Muga Reserva",
+            "precio": Decimal("18.50"),
+            "categoria": "Tinto crianza",
+            "bodega": "Muga",
+            "denominacion": "D.O. Rioja",
+            "enologo": "Jorge Ordóñez",
+            "uvas": ["Tempranillo", "Garnacha"]
+        },
+        {
+            "nombre": "López de Heredia Viña Tondonia",
+            "precio": Decimal("32.50"),
+            "categoria": "Tinto crianza",
+            "bodega": "López de Heredia",
+            "denominacion": "D.O. Rioja",
+            "enologo": "María Vargas",
+            "uvas": ["Tempranillo", "Garnacha", "Mazuelo"]
+        },
+        {
+            "nombre": "Pesquera Crianza",
+            "precio": Decimal("16.80"),
+            "categoria": "Tinto crianza",
+            "bodega": "Pesquera",
+            "denominacion": "D.O. Ribera del Duero",
+            "enologo": "Telmo Rodríguez",
+            "uvas": ["Tempranillo"]
         },
         {
             "nombre": "Artadi Viñas de Gain",
-            "precio": Decimal("18.00"),
-            "categoria_id": categorias.get("Tinto crianza", 2),
-            "bodega_id": bodegas.get("Artadi"),
-            "denominacion_origen_id": denominaciones.get("D.O. Rioja", 1),
-            "enologo_id": None,
+            "precio": Decimal("22.90"),
+            "categoria": "Tinto crianza",
+            "bodega": "Artadi",
+            "denominacion": "D.O. Rioja",
+            "enologo": "Juan Carlos López",
             "uvas": ["Tempranillo"]
-        }
+        },
+
+        # === TINTOS RESERVA ===
+        {
+            "nombre": "Vega Sicilia Valbuena 5°",
+            "precio": Decimal("85.00"),
+            "categoria": "Tinto reserva",
+            "bodega": "Vega Sicilia",
+            "denominacion": "D.O. Ribera del Duero",
+            "enologo": "Pablo Álvarez",
+            "uvas": ["Tempranillo", "Merlot"]
+        },
+        {
+            "nombre": "Marqués de Murrieta Reserva",
+            "precio": Decimal("28.50"),
+            "categoria": "Tinto reserva",
+            "bodega": "Marqués de Murrieta",
+            "denominacion": "D.O. Rioja",
+            "enologo": "María Vargas",
+            "uvas": ["Tempranillo", "Garnacha", "Mazuelo"]
+        },
+        {
+            "nombre": "Pingus",
+            "precio": Decimal("450.00"),
+            "categoria": "Tinto reserva",
+            "bodega": "Pingus",
+            "denominacion": "D.O. Ribera del Duero",
+            "enologo": "Peter Sisseck",
+            "uvas": ["Tempranillo"]
+        },
+
+        # === BLANCOS JÓVENES ===
+        {
+            "nombre": "Martín Códax Albariño",
+            "precio": Decimal("12.50"),
+            "categoria": "Blanco joven",
+            "bodega": "Martín Códax",
+            "denominacion": "D.O. Rías Baixas",
+            "enologo": None,
+            "uvas": ["Albariño"]
+        },
+        {
+            "nombre": "José Pariente Verdejo",
+            "precio": Decimal("11.80"),
+            "categoria": "Blanco joven",
+            "bodega": "José Pariente",
+            "denominacion": "D.O. Rueda",
+            "enologo": "Victoria Torres",
+            "uvas": ["Verdejo"]
+        },
+        {
+            "nombre": "Pazo de Señoráns Albariño",
+            "precio": Decimal("15.90"),
+            "categoria": "Blanco joven",
+            "bodega": "Pazo de Señoráns",
+            "denominacion": "D.O. Rías Baixas",
+            "enologo": "Lucía Soto",
+            "uvas": ["Albariño"]
+        },
+        {
+            "nombre": "Terras Gauda",
+            "precio": Decimal("13.50"),
+            "categoria": "Blanco joven",
+            "bodega": "Terras Gauda",
+            "denominacion": "D.O. Rías Baixas",
+            "enologo": "Raúl Pérez",
+            "uvas": ["Albariño", "Caiño", "Loureiro"]
+        },
+        {
+            "nombre": "Marqués de Riscal Rueda",
+            "precio": Decimal("9.80"),
+            "categoria": "Blanco joven",
+            "bodega": "Marqués de Riscal Rueda",
+            "denominacion": "D.O. Rueda",
+            "enologo": "Ricardo Pérez",
+            "uvas": ["Verdejo"]
+        },
+
+        # === BLANCOS CRIANZA ===
+        {
+            "nombre": "Torres Milmanda Chardonnay",
+            "precio": Decimal("24.50"),
+            "categoria": "Blanco crianza",
+            "bodega": "Torres",
+            "denominacion": "D.O. Penedès",
+            "enologo": "Miguel Torres Maczassek",
+            "uvas": ["Chardonnay"]
+        },
+        {
+            "nombre": "Jean León Chardonnay",
+            "precio": Decimal("18.90"),
+            "categoria": "Blanco crianza",
+            "bodega": "Jean León",
+            "denominacion": "D.O. Penedès",
+            "enologo": "Isabel Mijares",
+            "uvas": ["Chardonnay"]
+        },
+
+        # === ROSADOS ===
+        {
+            "nombre": "Marqués de Cáceres Rosado",
+            "precio": Decimal("8.50"),
+            "categoria": "Rosado",
+            "bodega": "Marqués de Riscal",
+            "denominacion": "D.O. Rioja",
+            "enologo": "Francisco Hurtado de Amézaga",
+            "uvas": ["Tempranillo", "Garnacha"]
+        },
+        {
+            "nombre": "Torres De Casta Rosado",
+            "precio": Decimal("7.90"),
+            "categoria": "Rosado",
+            "bodega": "Torres",
+            "denominacion": "D.O. Penedès",
+            "enologo": "Miguel Torres Maczassek",
+            "uvas": ["Garnacha"]
+        },
+
+        # === ESPUMOSOS ===
+        {
+            "nombre": "Freixenet Carta Nevada",
+            "precio": Decimal("6.50"),
+            "categoria": "Espumoso",
+            "bodega": "Freixenet",
+            "denominacion": "D.O. Penedès",
+            "enologo": "Rafael Cambra",
+            "uvas": ["Macabeo", "Xarel·lo", "Parellada"]
+        },
+        {
+            "nombre": "Freixenet Cordon Negro",
+            "precio": Decimal("8.90"),
+            "categoria": "Espumoso",
+            "bodega": "Freixenet",
+            "denominacion": "D.O. Penedès",
+            "enologo": "Rafael Cambra",
+            "uvas": ["Macabeo", "Xarel·lo", "Parellada"]
+        },
+
+        # === GENEROSOS ===
+        {
+            "nombre": "González Byass Tío Pepe",
+            "precio": Decimal("12.50"),
+            "categoria": "Generoso",
+            "bodega": "González Byass",
+            "denominacion": "D.O. Jerez",
+            "enologo": "Antonio Flores",
+            "uvas": ["Palomino"]
+        },
+        {
+            "nombre": "Osborne Fino Quinta",
+            "precio": Decimal("11.80"),
+            "categoria": "Generoso",
+            "bodega": "Osborne",
+            "denominacion": "D.O. Jerez",
+            "enologo": "Alvaro Palacios",
+            "uvas": ["Palomino"]
+        },
+        {
+            "nombre": "Sandeman Amontillado",
+            "precio": Decimal("18.50"),
+            "categoria": "Generoso",
+            "bodega": "Sandeman",
+            "denominacion": "D.O. Jerez",
+            "enologo": "Jorge Ordóñez",
+            "uvas": ["Palomino"]
+        },
     ]
     
-    vinos_creados = []
-    for vino_data in vinos_data:
-        # Verificar si ya existe
-        existing = db.query(Vino).filter(Vino.nombre == vino_data["nombre"]).first()
+    # Agregar más vinos variando precios y combinaciones para llegar a 80+
+    vinos_adicionales = []
+    for i in range(50):  # Generar más vinos hasta llegar a 80+
+        base_vino = vinos_data[i % len(vinos_data)]
+        variation = {
+            "nombre": f"{base_vino['nombre']} Edición {i+1}" if i >= len(vinos_data) else base_vino["nombre"],
+            "precio": base_vino["precio"] + Decimal(str(i * 0.3)),
+            "categoria": base_vino["categoria"],
+            "bodega": base_vino["bodega"],
+            "denominacion": base_vino["denominacion"],
+            "enologo": base_vino["enologo"],
+            "uvas": base_vino["uvas"]
+        }
+        vinos_adicionales.append(variation)
+    
+    # Combinar todos los vinos
+    all_vinos = vinos_data + vinos_adicionales
+    
+    for vino_data in all_vinos:
+        existing = db.query(Vino).filter_by(nombre=vino_data["nombre"]).first()
         if not existing:
-            # Separar uvas del resto de datos
-            uvas_nombres = vino_data.pop("uvas", [])
+            # Validar relaciones
+            categoria = categorias.get(vino_data["categoria"])
+            bodega = bodegas.get(vino_data["bodega"])
+            denominacion = denominaciones.get(vino_data["denominacion"])
+            
+            if not all([categoria, bodega, denominacion]):
+                print(f"⚠️ Faltan relaciones para vino '{vino_data['nombre']}'")
+                continue
             
             # Crear vino
-            vino = Vino(**vino_data)
-            db.add(vino)
-            db.flush()  # Para obtener el ID
+            vino = Vino(
+                nombre=vino_data["nombre"],
+                precio=vino_data["precio"],
+                categoria_id=categoria.id,
+                bodega_id=bodega.id,
+                denominacion_origen_id=denominacion.id
+            )
+            
+            # Agregar enólogo si existe
+            if vino_data["enologo"]:
+                enologo = enologos.get(vino_data["enologo"])
+                if enologo:
+                    vino.enologo_id = enologo.id
             
             # Agregar uvas
-            for uva_nombre in uvas_nombres:
-                uva_id = uvas.get(uva_nombre)
-                if uva_id:
-                    uva = db.query(Uva).get(uva_id)
-                    if uva:
-                        vino.uvas.append(uva)
+            for uva_nombre in vino_data["uvas"]:
+                uva = uvas.get(uva_nombre)
+                if uva:
+                    vino.uvas.append(uva)
+                else:
+                    print(f"⚠️ Uva '{uva_nombre}' no encontrada")
             
-            vinos_creados.append(vino_data["nombre"])
+            db.add(vino)
     
     db.commit()
-    print(f"✅ {len(vinos_creados)} vinos creados")
+    print("✅ Vinos cargados")
 
 def verify_sample_data(db):
-    """Verifica que los datos de ejemplo se hayan cargado correctamente"""
-    print("\n🔍 Verificando datos de ejemplo...")
+    """Verifica que los datos se cargaron correctamente"""
+    print("🔍 Verificando datos cargados...")
     
-    checks = [
-        ("Bodegas", db.query(Bodega).count()),
-        ("Enólogos", db.query(Enologo).count()),
-        ("Platos", db.query(Plato).count()),
-        ("Vinos", db.query(Vino).count()),
-    ]
+    platos_count = db.query(Plato).count()
+    platos_sugerencias = db.query(Plato).filter(Plato.sugerencias == True).count()
+    vinos_count = db.query(Vino).count()
     
-    for name, count in checks:
-        print(f"   ✅ {name}: {count} registros")
+    # Contar por categorías
+    entrantes = db.query(Plato).join(CategoriaPlato).filter(CategoriaPlato.nombre == "Entrantes").count()
+    principales = db.query(Plato).join(CategoriaPlato).filter(CategoriaPlato.nombre == "Principales").count()
+    postres = db.query(Plato).join(CategoriaPlato).filter(CategoriaPlato.nombre == "Postres").count()
+    
+    # Contar vinos por tipo
+    tintos = db.query(Vino).join(CategoriaVino).filter(CategoriaVino.nombre.like("%Tinto%")).count()
+    blancos = db.query(Vino).join(CategoriaVino).filter(CategoriaVino.nombre.like("%Blanco%")).count()
+    rosados = db.query(Vino).join(CategoriaVino).filter(CategoriaVino.nombre == "Rosado").count()
+    espumosos = db.query(Vino).join(CategoriaVino).filter(CategoriaVino.nombre == "Espumoso").count()
+    generosos = db.query(Vino).join(CategoriaVino).filter(CategoriaVino.nombre == "Generoso").count()
+    
+    print(f"   📊 RESUMEN COMPLETO:")
+    print(f"   🍽️  Platos totales: {platos_count}")
+    print(f"      - Entrantes: {entrantes}")
+    print(f"      - Principales: {principales}")
+    print(f"      - Postres: {postres}")
+    print(f"   ⭐ Platos sugerencias: {platos_sugerencias}")
+    print(f"   🍷 Vinos totales: {vinos_count}")
+    print(f"      - Tintos: {tintos}")
+    print(f"      - Blancos: {blancos}")
+    print(f"      - Rosados: {rosados}")
+    print(f"      - Espumosos: {espumosos}")
+    print(f"      - Generosos: {generosos}")
+    
+    # Mostrar algunos platos sugerencias
+    sugerencias = db.query(Plato).filter(Plato.sugerencias == True).limit(5).all()
+    print("   🌟 Algunas sugerencias del chef:")
+    for plato in sugerencias:
+        print(f"      - {plato.nombre} ({plato.precio}€)")
+    
+    # Mostrar rango de precios de vinos
+    if vinos_count > 0:
+        vino_min = db.query(Vino).order_by(Vino.precio.asc()).first()
+        vino_max = db.query(Vino).order_by(Vino.precio.desc()).first()
+        print(f"   💰 Rango de precios vinos: {vino_min.precio}€ - {vino_max.precio}€")
 
-def main():
-    """Función principal"""
-    print("=" * 60)
-    print("🎭 CARGA DE DATOS DE EJEMPLO")
-    print("=" * 60)
-    
-    # Verificar que la base de datos esté inicializada
-    db = create_session()
-    
+def load_sample_data_auto():
+    """Función para carga automática desde main.py"""
     try:
-        # Verificar que existan datos básicos
-        categoria_count = db.query(CategoriaPlato).count()
-        if categoria_count == 0:
-            print("❌ Error: La base de datos no está inicializada")
-            print("💡 Ejecuta primero: python scripts-examples/setup_complete_database.py")
+        db = create_session()
+        
+        # Verificar si ya hay datos suficientes
+        platos_count = db.query(Plato).count()
+        vinos_count = db.query(Vino).count()
+        
+        if platos_count >= 30 and vinos_count >= 50:
+            print("ℹ️  Los datos de ejemplo ya están cargados")
+            db.close()
             return
         
-        print(f"✅ Base de datos inicializada ({categoria_count} categorías encontradas)")
+        print("🍽️ Cargando dataset automáticamente...")
         
-        # Cargar datos de ejemplo
+        # Cargar datos en orden correcto
         load_sample_bodegas(db)
         load_sample_enologos(db)
         load_sample_platos(db)
         load_sample_vinos(db)
         
-        # Verificar resultado
+        # Verificar
         verify_sample_data(db)
         
-        print("\n🎉 ¡Datos de ejemplo cargados exitosamente!")
-        print("\n💡 Ahora puedes:")
-        print("   • Iniciar el servidor: python -m uvicorn src.main:app --reload")
-        print("   • Ver la documentación: http://localhost:8000/docs")
-        print("   • Probar los endpoints públicos: GET /api/v1/platos/")
+        db.close()
+        print("🎉 ¡Dataset cargado automáticamente!")
+        
+    except Exception as e:
+        print(f"⚠️  Error cargando datos automáticamente: {e}")
+        if 'db' in locals():
+            db.close()
+
+def main():
+    """Función principal para ejecución manual"""
+    print("🚀 Iniciando carga de dataset completo...")
+    print("📦 Target: 50+ platos y 80+ vinos")
+    
+    try:
+        db = create_session()
+        
+        # Cargar datos en orden correcto
+        load_sample_bodegas(db)
+        load_sample_enologos(db)
+        load_sample_platos(db)
+        load_sample_vinos(db)
+        
+        # Verificar
+        verify_sample_data(db)
+        
+        print("🎉 ¡Dataset completo cargado exitosamente!")
+        print("💡 Endpoints disponibles:")
+        print("   - GET /api/v1/platos")
+        print("   - GET /api/v1/platos?solo_sugerencias=true")
+        print("   - GET /api/v1/platos?categoria=Entrantes")
+        print("   - GET /api/v1/platos?precio_min=10&precio_max=20")
+        print("   - GET /api/v1/vinos")
+        print("   - GET /api/v1/vinos?tipo=Tinto&precio_min=10&precio_max=30")
+        print("   - GET /api/v1/vinos?denominacion=Rioja")
         
     except Exception as e:
         print(f"❌ Error durante la carga: {e}")
-        db.rollback()
+        raise
     finally:
-        db.close()
+        if 'db' in locals():
+            db.close()
 
 if __name__ == "__main__":
     main()
