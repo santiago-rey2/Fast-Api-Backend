@@ -46,6 +46,14 @@ class MenuRepository:
 
         if sugerencias is not None:
             filters.append(Plato.sugerencias == sugerencias)
+            # Si NO se están pidiendo sugerencias (sugerencias=False o None para carta normal),
+            # solo mostrar platos activos
+            if not sugerencias:
+                filters.append(Plato.is_active == True)
+        else:
+            # Si no se especifica el parámetro sugerencias, mostrar solo platos activos
+            # (comportamiento por defecto para la carta)
+            filters.append(Plato.is_active == True)
         
         if filters:
             query = query.filter(and_(*filters))

@@ -68,6 +68,7 @@ async def get_platos(
         menu_repo = MenuRepository(db)
         platos_agrupados = menu_repo.get_platos_agrupados_por_categoria(
             categoria=categoria,
+            sugerencias=sugerencias,
             precio_min=precio_min,
             precio_max=precio_max
         )
