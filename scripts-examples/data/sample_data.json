@@ -1,0 +1,124 @@
+{
+  "categorias_platos": [
+    {
+      "nombre": "Entrantes",
+      "descripcion": "Primeros platos y aperitivos"
+    },
+    {
+      "nombre": "Principales",
+      "descripcion": "Platos principales"
+    },
+    {
+      "nombre": "Postres",
+      "descripcion": "Postres y dulces"
+    }
+  ],
+  "categorias_vinos": [
+    {
+      "nombre": "Tinto joven",
+      "descripcion": "Vinos tintos jóvenes"
+    },
+    {
+      "nombre": "Tinto crianza",
+      "descripcion": "Vinos tintos con crianza"
+    },
+    {
+      "nombre": "Blanco joven",
+      "descripcion": "Vinos blancos jóvenes"
+    }
+  ],
+  "alergenos": [
+    {
+      "nombre": "Gluten",
+      "descripcion": "Contiene gluten"
+    },
+    {
+      "nombre": "Lácteos",
+      "descripcion": "Contiene productos lácteos"
+    },
+    {
+      "nombre": "Huevos",
+      "descripcion": "Contiene huevo"
+    },
+    {
+      "nombre": "Pescado",
+      "descripcion": "Contiene pescado"
+    }
+  ],
+  "bodegas": [
+    {
+      "nombre": "Marqués de Riscal",
+      "region": "Rioja"
+    },
+    {
+      "nombre": "Torres",
+      "region": "Penedès"
+    }
+  ],
+  "denominaciones_origen": [
+    {
+      "nombre": "D.O. Rioja",
+      "region": "La Rioja"
+    },
+    {
+      "nombre": "D.O. Penedès",
+      "region": "Cataluña"
+    }
+  ],
+  "enologos": [
+    {
+      "nombre": "Francisco Hurtado de Amézaga"
+    },
+    {
+      "nombre": "Miguel Torres Maczassek"
+    }
+  ],
+  "uvas": [
+    {
+      "nombre": "Tempranillo",
+      "tipo": "Tinta"
+    },
+    {
+      "nombre": "Albariño",
+      "tipo": "Blanca"
+    }
+  ],
+  "platos": [
+    {
+      "nombre": "Ensalada César",
+      "descripcion": "Lechuga romana con salsa césar",
+      "precio": 12.5,
+      "categoria": "Entrantes",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Gluten",
+        "Huevos",
+        "Lácteos"
+      ]
+    }
+  ],
+  "vinos": [
+    {
+      "nombre": "Marqués de Riscal Reserva",
+      "precio": 15.9,
+      "categoria": "Tinto crianza",
+      "bodega": "Marqués de Riscal",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Francisco Hurtado de Amézaga",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "email": "admin@restaurant.com",
+      "username": "admin",
+      "password": "admin123",
+      "is_superuser": true,
+      "is_active": true
+    }
+  ]
+}

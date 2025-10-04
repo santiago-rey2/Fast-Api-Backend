@@ -2,8 +2,8 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from src.database import get_db
-from src.repositories.menu_repository import MenuRepository
-from src.repositories.vinos_repository import VinosRepository
+from src.services.menu_service import MenuService
+from src.services.vinos_service import VinosService
 from src.schemas.menu_schema import PlatosGroupedResponse
 from src.schemas.wines_schema import VinosGroupedResponse
 
@@ -66,7 +66,7 @@ async def get_platos(
     ```
     """
     try:
-        menu_repo = MenuRepository(db)
+        menu_repo = MenuService(db)
         platos_agrupados = menu_repo.get_platos_public(
             categoria=categoria,
             sugerencias=sugerencias,
@@ -139,8 +139,8 @@ async def get_vinos(
     ```
     """
     try:
-        menu_repo = VinosRepository(db)
-        vinos_agrupados = menu_repo.get_vinos_public(
+        vinos_service = VinosService(db)
+        vinos_agrupados = vinos_service.get_vinos_public(
             tipo=tipo,
             denominacion=denominacion,
             precio_min=precio_min,

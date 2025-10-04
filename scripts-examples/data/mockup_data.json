@@ -1,0 +1,1314 @@
+{
+  "categorias_platos": [
+    {
+      "nombre": "Entrantes"
+    },
+    {
+      "nombre": "Principales"
+    },
+    {
+      "nombre": "Postres"
+    }
+  ],
+  "categorias_vinos": [
+    {
+      "nombre": "Tinto joven"
+    },
+    {
+      "nombre": "Tinto crianza"
+    },
+    {
+      "nombre": "Blanco joven"
+    }
+  ],
+  "alergenos": [
+  {
+    "nombre": "Gluten"
+  },
+  {
+    "nombre": "Crustáceos"
+  },
+  {
+    "nombre": "Huevos"
+  },
+  {
+    "nombre": "Pescado"
+  },
+  {
+    "nombre": "Cacahuetes"
+  },
+  {
+    "nombre": "Soja"
+  },
+  {
+    "nombre": "Lácteos"
+  },
+  {
+    "nombre": "Frutos de cáscara"
+  },
+  {
+    "nombre": "Apio"
+  },
+  {
+    "nombre": "Mostaza"
+  },
+  {
+    "nombre": "Granos de sésamo"
+  },
+  {
+    "nombre": "Dióxido de azufre y sulfitos"
+  },
+  {
+    "nombre": "Altramuces"
+  },
+  {
+    "nombre": "Moluscos"
+  }
+],
+  "bodegas": [
+    {
+      "nombre": "Marqués de Riscal",
+      "region": "Rioja"
+    },
+    {
+      "nombre": "Torres",
+      "region": "Penedès"
+    },
+    {
+      "nombre": "Bodegas Muga",
+      "region": "Rioja"
+    },
+    {
+      "nombre": "Bodegas Emilio Moro",
+      "region": "Ribera del Duero"
+    },
+    {
+      "nombre": "Bodegas Ramón Bilbao",
+      "region": "Rioja"
+    },
+    {
+      "nombre": "Clos Mogador",
+      "region": "Priorat"
+    },
+    {
+      "nombre": "Bodegas Roda",
+      "region": "Rioja"
+    },
+    {
+      "nombre": "Bodegas Juve & Camps",
+      "region": "Penedès"
+    },
+    {
+      "nombre": "Bodegas Martín Códax",
+      "region": "Rías Baixas"
+    },
+    {
+      "nombre": "Bodegas Alvear",
+      "region": "Montilla-Moriles"
+    },
+    {
+      "nombre": "Juvé & Camps",
+      "region": "Penedès"
+    }
+  ],
+  "denominaciones_origen": [
+    {
+      "nombre": "D.O. Rioja",
+      "region": "La Rioja"
+    },
+    {
+      "nombre": "D.O. Penedès",
+      "region": "Cataluña"
+    },
+    {
+      "nombre": "D.O. Ribera del Duero",
+      "region": "Castilla y León"
+    },
+    {
+      "nombre": "D.O. Rías Baixas",
+      "region": "Galicia"
+    },
+    {
+      "nombre": "D.O. Priorat",
+      "region": "Cataluña"
+    },
+    {
+      "nombre": "D.O. Montilla-Moriles",
+      "region": "Andalucía"
+    },
+    {
+      "nombre": "D.O. Rueda",
+      "region": "Castilla y León"
+    },
+    {
+      "nombre": "D.O. Bierzo",
+      "region": "Castilla y León"
+    }
+  ],
+  "enologos": [
+    {
+      "nombre": "Francisco Hurtado de Amézaga"
+    },
+    {
+      "nombre": "Miguel Torres Maczassek"
+    },
+    {
+      "nombre": "Jesús Madrazo"
+    },
+    {
+      "nombre": "Juan Carlos Sancha"
+    }
+  ],
+  "uvas": [
+    {
+      "nombre": "Tempranillo",
+      "tipo": "Tinta"
+    },
+    {
+      "nombre": "Albariño",
+      "tipo": "Blanca"
+    },
+    {
+      "nombre": "Garnacha",
+      "tipo": "Tinta"
+    },
+    {
+      "nombre": "Verdejo",
+      "tipo": "Blanca"
+    },
+    {
+      "nombre": "Mencía",
+      "tipo": "Tinta"
+    },
+    {
+      "nombre": "Chardonnay",
+      "tipo": "Blanca"
+    },
+    {
+      "nombre": "Sauvignon Blanc",
+      "tipo": "Blanca"
+    },
+    {
+      "nombre": "Graciano",
+      "tipo": "Tinta"
+    },
+    {
+      "nombre": "Pedro Ximénez",
+      "tipo": "Blanca"
+    }
+  ],
+  "platos": [
+    {
+      "nombre": "Ensalada César",
+      "descripcion": "Lechuga romana con salsa césar",
+      "precio": 12.5,
+      "categoria": "Entrantes",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Gluten",
+        "Huevos",
+        "Lácteos"
+      ]
+    },
+    {
+      "nombre": "Bravas de la casa",
+      "descripcion": "Patatas bravas con salsa especial",
+      "precio": 6.5,
+      "categoria": "Entrantes",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Lácteos"
+      ]
+    },
+    {
+      "nombre": "Pulpo a la gallega",
+      "descripcion": "Pulpo con pimentón y aceite de oliva",
+      "precio": 16.0,
+      "categoria": "Entrantes",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Pescado"
+      ]
+    },
+    {
+      "nombre": "Tartar de atún",
+      "descripcion": "Atún rojo con aguacate y soja",
+      "precio": 18.0,
+      "categoria": "Entrantes",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Pescado"
+      ]
+    },
+    {
+      "nombre": "Croquetas de jamón",
+      "descripcion": "Cremosas croquetas caseras",
+      "precio": 8.0,
+      "categoria": "Entrantes",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Gluten",
+        "Lácteos",
+        "Huevos"
+      ]
+    },
+    {
+      "nombre": "Tabla de quesos",
+      "descripcion": "Selección de quesos nacionales",
+      "precio": 14.5,
+      "categoria": "Entrantes",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Lácteos"
+      ]
+    },
+    {
+      "nombre": "Boquerones en vinagre",
+      "descripcion": "Boquerones marinados al estilo tradicional",
+      "precio": 9.0,
+      "categoria": "Entrantes",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Pescado"
+      ]
+    },
+    {
+      "nombre": "Hummus con pita",
+      "descripcion": "Hummus casero con pan de pita",
+      "precio": 7.0,
+      "categoria": "Entrantes",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Gluten"
+      ]
+    },
+    {
+      "nombre": "Tosta de solomillo",
+      "descripcion": "Tosta con solomillo, cebolla caramelizada",
+      "precio": 11.5,
+      "categoria": "Entrantes",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Gluten"
+      ]
+    },
+    {
+      "nombre": "Eggs Benedict",
+      "descripcion": "Huevos pochados con salsa holandesa",
+      "precio": 13.0,
+      "categoria": "Entrantes",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Huevos",
+        "Lácteos",
+        "Gluten"
+      ]
+    },
+    {
+      "nombre": "Champiñones al ajillo",
+      "descripcion": "Champiñones salteados con ajo y perejil",
+      "precio": 8.5,
+      "categoria": "Entrantes",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": []
+    },
+    {
+      "nombre": "Ceviche de corvina",
+      "descripcion": "Corvina marinada con cítricos",
+      "precio": 15.5,
+      "categoria": "Entrantes",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Pescado"
+      ]
+    },
+    {
+      "nombre": "Gambas al ajillo",
+      "descripcion": "Gambas salteadas con ajo y guindilla",
+      "precio": 14.0,
+      "categoria": "Entrantes",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Pescado"
+      ]
+    },
+    {
+      "nombre": "Pan con tomate",
+      "descripcion": "Pan rústico con tomate y aceite de oliva",
+      "precio": 4.5,
+      "categoria": "Entrantes",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Gluten"
+      ]
+    },
+    {
+      "nombre": "Empanada gallega",
+      "descripcion": "Empanada rellena de atún",
+      "precio": 7.5,
+      "categoria": "Entrantes",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Gluten",
+        "Pescado"
+      ]
+    },
+    {
+      "nombre": "Paté casero",
+      "descripcion": "Paté de pato con tostas",
+      "precio": 9.5,
+      "categoria": "Entrantes",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Gluten",
+        "Lácteos"
+      ]
+    },
+    {
+      "nombre": "Edamame con sal gruesa",
+      "descripcion": "Vainas de soja hervidas",
+      "precio": 5.5,
+      "categoria": "Entrantes",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": []
+    },
+    {
+      "nombre": "Pimientos del piquillo rellenos",
+      "descripcion": "Rellenos de brandada de bacalao",
+      "precio": 10.5,
+      "categoria": "Entrantes",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Pescado"
+      ]
+    },
+    {
+      "nombre": "Calamares a la romana",
+      "descripcion": "Calamares rebozados y fritos",
+      "precio": 11.0,
+      "categoria": "Entrantes",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Gluten",
+        "Pescado"
+      ]
+    },
+    {
+      "nombre": "Sopa de cebolla",
+      "descripcion": "Sopa gratinada al estilo tradicional",
+      "precio": 7.0,
+      "categoria": "Entrantes",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Lácteos",
+        "Gluten"
+      ]
+    },
+    {
+      "nombre": "Ravioli de ricotta",
+      "descripcion": "Ravioli casero relleno de ricotta y espinacas",
+      "precio": 13.5,
+      "categoria": "Principales",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Gluten",
+        "Lácteos",
+        "Huevos"
+      ]
+    },
+    {
+      "nombre": "Paella mixta",
+      "descripcion": "Arroz con mariscos y pollo",
+      "precio": 18.5,
+      "categoria": "Principales",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Pescado",
+        "Gluten"
+      ]
+    },
+    {
+      "nombre": "Bacalao al pil pil",
+      "descripcion": "Bacalao confitado con emulsión de aceite",
+      "precio": 19.0,
+      "categoria": "Principales",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Pescado"
+      ]
+    },
+    {
+      "nombre": "Entrecot a la plancha",
+      "descripcion": "Entrecot de ternera con guarnición",
+      "precio": 21.0,
+      "categoria": "Principales",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": []
+    },
+    {
+      "nombre": "Solomillo al foie",
+      "descripcion": "Solomillo con salsa de foie",
+      "precio": 26.0,
+      "categoria": "Principales",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Lácteos"
+      ]
+    },
+    {
+      "nombre": "Lasaña de carne",
+      "descripcion": "Lasaña casera gratinada",
+      "precio": 14.5,
+      "categoria": "Principales",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Gluten",
+        "Lácteos",
+        "Huevos"
+      ]
+    },
+    {
+      "nombre": "Rabo de toro estofado",
+      "descripcion": "Cocinado lentamente con vino tinto",
+      "precio": 20.0,
+      "categoria": "Principales",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": []
+    },
+    {
+      "nombre": "Lubina al horno",
+      "descripcion": "Lubina asada con hierbas",
+      "precio": 22.0,
+      "categoria": "Principales",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Pescado"
+      ]
+    },
+    {
+      "nombre": "Curry de verduras",
+      "descripcion": "Curry suave con arroz basmati",
+      "precio": 13.0,
+      "categoria": "Principales",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": []
+    },
+    {
+      "nombre": "Pollo al chilindrón",
+      "descripcion": "Pollo guisado con tomate y pimientos",
+      "precio": 14.0,
+      "categoria": "Principales",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": []
+    },
+    {
+      "nombre": "Risotto de setas",
+      "descripcion": "Arroz cremoso con setas variadas",
+      "precio": 15.5,
+      "categoria": "Principales",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Lácteos"
+      ]
+    },
+    {
+      "nombre": "Hamburguesa de autor",
+      "descripcion": "Burger casera con queso y bacon",
+      "precio": 12.0,
+      "categoria": "Principales",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Gluten",
+        "Lácteos"
+      ]
+    },
+    {
+      "nombre": "Tataki de atún",
+      "descripcion": "Atún sellado con salsa cítrica",
+      "precio": 17.5,
+      "categoria": "Principales",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Pescado"
+      ]
+    },
+    {
+      "nombre": "Carrilleras al vino",
+      "descripcion": "Carrilleras estofadas con puré",
+      "precio": 16.5,
+      "categoria": "Principales",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": []
+    },
+    {
+      "nombre": "Fideuá de marisco",
+      "descripcion": "Fideos con calamares, gambas y alioli",
+      "precio": 17.0,
+      "categoria": "Principales",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Pescado",
+        "Gluten"
+      ]
+    },
+    {
+      "nombre": "Canelones de espinacas",
+      "descripcion": "Canelones rellenos gratinados",
+      "precio": 13.0,
+      "categoria": "Principales",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Gluten",
+        "Lácteos",
+        "Huevos"
+      ]
+    },
+    {
+      "nombre": "Tarta tatin",
+      "descripcion": "Tarta de manzana caramelizada",
+      "precio": 6.5,
+      "categoria": "Postres",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Gluten",
+        "Lácteos",
+        "Huevos"
+      ]
+    },
+    {
+      "nombre": "Flan casero",
+      "descripcion": "Flan tradicional con caramelo",
+      "precio": 5.0,
+      "categoria": "Postres",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Huevos",
+        "Lácteos"
+      ]
+    },
+    {
+      "nombre": "Tiramisú",
+      "descripcion": "Postre italiano con mascarpone",
+      "precio": 6.0,
+      "categoria": "Postres",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Gluten",
+        "Lácteos",
+        "Huevos"
+      ]
+    },
+    {
+      "nombre": "Helado artesanal",
+      "descripcion": "Selección de sabores caseros",
+      "precio": 4.5,
+      "categoria": "Postres",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Lácteos"
+      ]
+    },
+    {
+      "nombre": "Brownie con nueces",
+      "descripcion": "Brownie de chocolate con helado",
+      "precio": 6.5,
+      "categoria": "Postres",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Gluten",
+        "Lácteos",
+        "Huevos"
+      ]
+    },
+    {
+      "nombre": "Panna cotta",
+      "descripcion": "Panna cotta con coulis de frambuesa",
+      "precio": 5.5,
+      "categoria": "Postres",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Lácteos"
+      ]
+    },
+    {
+      "nombre": "Crema catalana",
+      "descripcion": "Crema quemada tradicional",
+      "precio": 5.0,
+      "categoria": "Postres",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Lácteos",
+        "Huevos"
+      ]
+    },
+    {
+      "nombre": "queso manchego curado",
+      "descripcion": "Tabla de queso manchego con membrillo",
+      "precio": 7.0,
+      "categoria": "Postres",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Lácteos"
+      ]
+    },
+    {
+      "nombre": "Milhojas de crema",
+      "descripcion": "Hojaldre con crema pastelera",
+      "precio": 6.0,
+      "categoria": "Postres",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Gluten",
+        "Lácteos",
+        "Huevos"
+      ]
+    },
+    {
+      "nombre": "Sorbete de limón",
+      "descripcion": "Sorbete refrescante al limón",
+      "precio": 4.0,
+      "categoria": "Postres",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": []
+    },
+    {
+      "nombre": "Coulant de chocolate",
+      "descripcion": "Bizcocho con corazón líquido",
+      "precio": 6.5,
+      "categoria": "Postres",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": [
+        "Gluten",
+        "Huevos",
+        "Lácteos"
+      ]
+    },
+    {
+      "nombre": "Tosta de anchoas",
+      "descripcion": "Anchoas sobre tostada con mantequilla",
+      "precio": 9.0,
+      "categoria": "Entrantes",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Pescado",
+        "Gluten",
+        "Lácteos"
+      ]
+    },
+    {
+      "nombre": "Sándwich club",
+      "descripcion": "Sándwich triple con pollo y bacon",
+      "precio": 10.5,
+      "categoria": "Entrantes",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": [
+        "Gluten",
+        "Huevos",
+        "Lácteos"
+      ]
+    },
+    {
+      "nombre": "Ensalada de quinoa",
+      "descripcion": "Quinoa con verduras y vinagreta",
+      "precio": 9.5,
+      "categoria": "Entrantes",
+      "sugerencias": false,
+      "is_active": true,
+      "alergenos": []
+    },
+    {
+      "nombre": "Solomillo de cerdo glaseado",
+      "descripcion": "Cerdo glaseado con miel y mostaza",
+      "precio": 17.0,
+      "categoria": "Principales",
+      "sugerencias": true,
+      "is_active": true,
+      "alergenos": []
+    }
+  ],
+  "vinos": [
+    {
+      "nombre": "Marqués de Riscal Reserva",
+      "precio": 15.9,
+      "categoria": "Tinto crianza",
+      "bodega": "Marqués de Riscal",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Francisco Hurtado de Amézaga",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo"
+      ]
+    },
+    {
+      "nombre": "Torres Sangre de Toro",
+      "precio": 9.5,
+      "categoria": "Tinto joven",
+      "bodega": "Torres",
+      "denominacion": "D.O. Penedès",
+      "enologo": "Miguel Torres Maczassek",
+      "is_active": true,
+      "uvas": [
+        "Garnacha",
+        "Tempranillo"
+      ]
+    },
+    {
+      "nombre": "Muga Reserva",
+      "precio": 18.0,
+      "categoria": "Tinto crianza",
+      "bodega": "Bodegas Muga",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Jesús Madrazo",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo",
+        "Graciano"
+      ]
+    },
+    {
+      "nombre": "Emilio Moro Crianza",
+      "precio": 16.5,
+      "categoria": "Tinto crianza",
+      "bodega": "Bodegas Emilio Moro",
+      "denominacion": "D.O. Ribera del Duero",
+      "enologo": "Juan Carlos Sancha",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo"
+      ]
+    },
+    {
+      "nombre": "Ramón Bilbao Edición Limitada",
+      "precio": 20.0,
+      "categoria": "Tinto crianza",
+      "bodega": "Bodegas Ramón Bilbao",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Francisco Hurtado de Amézaga",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo",
+        "Garnacha"
+      ]
+    },
+    {
+      "nombre": "Clos Mogador Priorat",
+      "precio": 28.0,
+      "categoria": "Tinto crianza",
+      "bodega": "Clos Mogador",
+      "denominacion": "D.O. Priorat",
+      "enologo": "Miguel Torres Maczassek",
+      "is_active": true,
+      "uvas": [
+        "Garnacha"
+      ]
+    },
+    {
+      "nombre": "Roda I Reserva",
+      "precio": 27.5,
+      "categoria": "Tinto crianza",
+      "bodega": "Bodegas Roda",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Jesús Madrazo",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo"
+      ]
+    },
+    {
+      "nombre": "Juvé & Camps Reserva",
+      "precio": 13.0,
+      "categoria": "Blanco joven",
+      "bodega": "Bodegas Juve & Camps",
+      "denominacion": "D.O. Penedès",
+      "enologo": "Miguel Torres Maczassek",
+      "is_active": true,
+      "uvas": [
+        "Chardonnay"
+      ]
+    },
+    {
+      "nombre": "Martín Códax Albariño",
+      "precio": 12.0,
+      "categoria": "Blanco joven",
+      "bodega": "Bodegas Martín Códax",
+      "denominacion": "D.O. Rías Baixas",
+      "enologo": "Juan Carlos Sancha",
+      "is_active": true,
+      "uvas": [
+        "Albariño"
+      ]
+    },
+    {
+      "nombre": "Alvear Pedro Ximénez",
+      "precio": 22.0,
+      "categoria": "Blanco joven",
+      "bodega": "Bodegas Alvear",
+      "denominacion": "D.O. Montilla-Moriles",
+      "enologo": "Francisco Hurtado de Amézaga",
+      "is_active": true,
+      "uvas": [
+        "Pedro Ximénez"
+      ]
+    },
+    {
+      "nombre": "Tempranillo Joven 2023",
+      "precio": 8.0,
+      "categoria": "Tinto joven",
+      "bodega": "Marqués de Riscal",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Francisco Hurtado de Amézaga",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo"
+      ]
+    },
+    {
+      "nombre": "Garnacha del Sur Joven",
+      "precio": 7.5,
+      "categoria": "Tinto joven",
+      "bodega": "Torres",
+      "denominacion": "D.O. Penedès",
+      "enologo": "Miguel Torres Maczassek",
+      "is_active": true,
+      "uvas": [
+        "Garnacha"
+      ]
+    },
+    {
+      "nombre": "Albariño Selección",
+      "precio": 13.5,
+      "categoria": "Blanco joven",
+      "bodega": "Bodegas Martín Códax",
+      "denominacion": "D.O. Rías Baixas",
+      "enologo": "Juan Carlos Sancha",
+      "is_active": true,
+      "uvas": [
+        "Albariño"
+      ]
+    },
+    {
+      "nombre": "Verdejo Rueda",
+      "precio": 9.0,
+      "categoria": "Blanco joven",
+      "bodega": "Torres",
+      "denominacion": "D.O. Rueda",
+      "enologo": "Miguel Torres Maczassek",
+      "is_active": true,
+      "uvas": [
+        "Verdejo"
+      ]
+    },
+    {
+      "nombre": "Mencía Joven Bierzo",
+      "precio": 10.0,
+      "categoria": "Tinto joven",
+      "bodega": "Bodegas Emilio Moro",
+      "denominacion": "D.O. Bierzo",
+      "enologo": "Jesús Madrazo",
+      "is_active": true,
+      "uvas": [
+        "Mencía"
+      ]
+    },
+    {
+      "nombre": "Chardonnay Nuevo Mundo",
+      "precio": 11.0,
+      "categoria": "Blanco joven",
+      "bodega": "Juvé & Camps",
+      "denominacion": "D.O. Penedès",
+      "enologo": "Miguel Torres Maczassek",
+      "is_active": true,
+      "uvas": [
+        "Chardonnay"
+      ]
+    },
+    {
+      "nombre": "Graciano Reserva",
+      "precio": 19.0,
+      "categoria": "Tinto crianza",
+      "bodega": "Bodegas Muga",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Jesús Madrazo",
+      "is_active": true,
+      "uvas": [
+        "Graciano"
+      ]
+    },
+    {
+      "nombre": "Crianza Tradicional",
+      "precio": 14.0,
+      "categoria": "Tinto crianza",
+      "bodega": "Bodegas Ramón Bilbao",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Francisco Hurtado de Amézaga",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo"
+      ]
+    },
+    {
+      "nombre": "Finca & Vino Crianza",
+      "precio": 17.5,
+      "categoria": "Tinto crianza",
+      "bodega": "Bodegas Emilio Moro",
+      "denominacion": "D.O. Ribera del Duero",
+      "enologo": "Juan Carlos Sancha",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo"
+      ]
+    },
+    {
+      "nombre": "Priorat Joven",
+      "precio": 12.5,
+      "categoria": "Tinto joven",
+      "bodega": "Clos Mogador",
+      "denominacion": "D.O. Priorat",
+      "enologo": "Miguel Torres Maczassek",
+      "is_active": true,
+      "uvas": [
+        "Garnacha"
+      ]
+    },
+    {
+      "nombre": "Rosado fresco",
+      "precio": 8.0,
+      "categoria": "Blanco joven",
+      "bodega": "Torres",
+      "denominacion": "D.O. Penedès",
+      "enologo": "Miguel Torres Maczassek",
+      "is_active": true,
+      "uvas": [
+        "Garnacha"
+      ]
+    },
+    {
+      "nombre": "Cepa Vieja Crianza",
+      "precio": 21.0,
+      "categoria": "Tinto crianza",
+      "bodega": "Marqués de Riscal",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Francisco Hurtado de Amézaga",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo",
+        "Graciano"
+      ]
+    },
+    {
+      "nombre": "Blanco afrutado joven",
+      "precio": 9.5,
+      "categoria": "Blanco joven",
+      "bodega": "Bodegas Martín Códax",
+      "denominacion": "D.O. Rías Baixas",
+      "enologo": "Juan Carlos Sancha",
+      "is_active": true,
+      "uvas": [
+        "Albariño"
+      ]
+    },
+    {
+      "nombre": "Reserva Especial",
+      "precio": 30.0,
+      "categoria": "Tinto crianza",
+      "bodega": "Bodegas Roda",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Jesús Madrazo",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo"
+      ]
+    },
+    {
+      "nombre": "Garnacha Vieja",
+      "precio": 14.5,
+      "categoria": "Tinto joven",
+      "bodega": "Clos Mogador",
+      "denominacion": "D.O. Priorat",
+      "enologo": "Miguel Torres Maczassek",
+      "is_active": true,
+      "uvas": [
+        "Garnacha"
+      ]
+    },
+    {
+      "nombre": "Verdejo joven",
+      "precio": 8.5,
+      "categoria": "Blanco joven",
+      "bodega": "Torres",
+      "denominacion": "D.O. Rueda",
+      "enologo": "Miguel Torres Maczassek",
+      "is_active": true,
+      "uvas": [
+        "Verdejo"
+      ]
+    },
+    {
+      "nombre": "Albariño Barrel",
+      "precio": 16.0,
+      "categoria": "Blanco joven",
+      "bodega": "Bodegas Martín Códax",
+      "denominacion": "D.O. Rías Baixas",
+      "enologo": "Juan Carlos Sancha",
+      "is_active": true,
+      "uvas": [
+        "Albariño",
+        "Chardonnay"
+      ]
+    },
+    {
+      "nombre": "Tempranillo Roble",
+      "precio": 11.0,
+      "categoria": "Tinto joven",
+      "bodega": "Bodegas Ramón Bilbao",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Francisco Hurtado de Amézaga",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo"
+      ]
+    },
+    {
+      "nombre": "Cosecha Seleccionada",
+      "precio": 24.0,
+      "categoria": "Tinto crianza",
+      "bodega": "Bodegas Muga",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Jesús Madrazo",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo",
+        "Graciano"
+      ]
+    },
+    {
+      "nombre": "Blanco joven fermentado en barrica",
+      "precio": 17.0,
+      "categoria": "Blanco joven",
+      "bodega": "Juvé & Camps",
+      "denominacion": "D.O. Penedès",
+      "enologo": "Miguel Torres Maczassek",
+      "is_active": true,
+      "uvas": [
+        "Chardonnay"
+      ]
+    },
+    {
+      "nombre": "Mencía Reserva",
+      "precio": 18.5,
+      "categoria": "Tinto crianza",
+      "bodega": "Bodegas Emilio Moro",
+      "denominacion": "D.O. Bierzo",
+      "enologo": "Jesús Madrazo",
+      "is_active": true,
+      "uvas": [
+        "Mencía"
+      ]
+    },
+    {
+      "nombre": "Añejo del Valle",
+      "precio": 26.0,
+      "categoria": "Tinto crianza",
+      "bodega": "Bodegas Roda",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Jesús Madrazo",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo"
+      ]
+    },
+    {
+      "nombre": "Blanco joven reserva",
+      "precio": 12.5,
+      "categoria": "Blanco joven",
+      "bodega": "Bodegas Alvear",
+      "denominacion": "D.O. Montilla-Moriles",
+      "enologo": "Francisco Hurtado de Amézaga",
+      "is_active": true,
+      "uvas": [
+        "Pedro Ximénez"
+      ]
+    },
+    {
+      "nombre": "Crianza Premium",
+      "precio": 23.0,
+      "categoria": "Tinto crianza",
+      "bodega": "Bodegas Ramón Bilbao",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Francisco Hurtado de Amézaga",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo",
+        "Garnacha"
+      ]
+    },
+    {
+      "nombre": "Joven Selección",
+      "precio": 9.0,
+      "categoria": "Tinto joven",
+      "bodega": "Bodegas Muga",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Jesús Madrazo",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo"
+      ]
+    },
+    {
+      "nombre": "Blanco de Altura",
+      "precio": 15.0,
+      "categoria": "Blanco joven",
+      "bodega": "Bodegas Martín Códax",
+      "denominacion": "D.O. Rías Baixas",
+      "enologo": "Juan Carlos Sancha",
+      "is_active": true,
+      "uvas": [
+        "Albariño"
+      ]
+    },
+    {
+      "nombre": "Reserva Clásico",
+      "precio": 19.5,
+      "categoria": "Tinto crianza",
+      "bodega": "Marqués de Riscal",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Francisco Hurtado de Amézaga",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo",
+        "Graciano"
+      ]
+    },
+    {
+      "nombre": "Fresco de Viñas",
+      "precio": 8.9,
+      "categoria": "Tinto joven",
+      "bodega": "Bodegas Ramón Bilbao",
+      "denominacion": "D.O. Rioja",
+      "enologo": "Francisco Hurtado de Amézaga",
+      "is_active": true,
+      "uvas": [
+        "Garnacha"
+      ]
+    },
+    {
+      "nombre": "Chardonnay Joven",
+      "precio": 10.5,
+      "categoria": "Blanco joven",
+      "bodega": "Juvé & Camps",
+      "denominacion": "D.O. Penedès",
+      "enologo": "Miguel Torres Maczassek",
+      "is_active": true,
+      "uvas": [
+        "Chardonnay"
+      ]
+    },
+    {
+      "nombre": "Albariño Clásico",
+      "precio": 14.0,
+      "categoria": "Blanco joven",
+      "bodega": "Bodegas Martín Códax",
+      "denominacion": "D.O. Rías Baixas",
+      "enologo": "Juan Carlos Sancha",
+      "is_active": true,
+      "uvas": [
+        "Albariño"
+      ]
+    },
+    {
+      "nombre": "Selección del Enólogo",
+      "precio": 29.0,
+      "categoria": "Tinto crianza",
+      "bodega": "Clos Mogador",
+      "denominacion": "D.O. Priorat",
+      "enologo": "Miguel Torres Maczassek",
+      "is_active": true,
+      "uvas": [
+        "Garnacha",
+        "Tempranillo"
+      ]
+    },
+    {
+      "nombre": "Joven de la Casa",
+      "precio": 6.5,
+      "categoria": "Tinto joven",
+      "bodega": "Bodegas Alvear",
+      "denominacion": "D.O. Montilla-Moriles",
+      "enologo": "Francisco Hurtado de Amézaga",
+      "is_active": true,
+      "uvas": [
+        "Tempranillo"
+      ]
+    },
+    {
+      "nombre": "Blanco joven aromatico",
+      "precio": 9.2,
+      "categoria": "Blanco joven",
+      "bodega": "Bodegas Juve & Camps",
+      "denominacion": "D.O. Penedès",
+      "enologo": "Miguel Torres Maczassek",
+      "is_active": true,
+      "uvas": [
+        "Sauvignon Blanc"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "email": "admin@restaurant.com",
+      "username": "admin",
+      "password": "admin123",
+      "is_admin": true,
+      "is_active": true
+    }
+  ]
+}
