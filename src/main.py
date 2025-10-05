@@ -31,7 +31,10 @@ app.include_router(public_router, prefix="/api/v1")
 app.include_router(admin_router, prefix="/api/v1")
 
 # Inicializar base de datos
-init_db()
+try:
+    init_db()
+except Exception as e:
+    print(f"Error al inicializar la base de datos: {e}")
 
 @app.get("/")
 async def root():
