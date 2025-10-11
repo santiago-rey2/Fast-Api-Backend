@@ -232,38 +232,59 @@ def load_uvas(db, data: List[Dict[str, Any]]) -> Dict[str, Uva]:
     return uvas
 
 def load_platos(db, data: List[Dict[str, Any]], categorias: Dict[str, CategoriaPlato], alergenos: Dict[str, Alergeno]):
-    """Carga platos"""
-    print("🍽️ Cargando platos...")
+    """Carga platos con traducciones multiidioma"""
+    print("🍽️ Cargando platos con traducciones...")
     
     loaded_count = 0
     skipped_count = 0
-    processed_names = set()  # Para evitar duplicados
+    processed_keys = set()  # Para evitar duplicados por precio+unidad+categoria
     
     for plato_data in data:
-        plato_nombre = plato_data["nombre"]
-        
-        # Evitar duplicados
-        if plato_nombre in processed_names:
-            print(f"⚠️ Plato duplicado omitido: '{plato_nombre}'")
+        # Validar que tenga traducciones
+        if "traducciones" not in plato_data or not plato_data["traducciones"]:
+            print(f"⚠️ Plato sin traducciones omitido: {plato_data}")
             skipped_count += 1
             continue
         
-        processed_names.add(plato_nombre)
+        # Obtener el nombre en español como referencia
+        nombre_es = next(
+            (t["nombre"] for t in plato_data["traducciones"] if t["idioma"] == "es"),
+            None
+        )
         
-        existing = db.query(Plato).filter_by(nombre=plato_nombre).first()
+        if not nombre_es:
+            print(f"⚠️ Plato sin traducción en español omitido")
+            skipped_count += 1
+            continue
+        
+        # Crear clave única para evitar duplicados (precio + unidad + categoría)
+        plato_key = f"{plato_data['precio']}_{plato_data.get('precio_unidad', 'None')}_{plato_data['categoria']}"
+        
+        if plato_key in processed_keys:
+            print(f"⚠️ Plato duplicado omitido: '{nombre_es}' ({plato_data['precio']} {plato_data.get('precio_unidad', '')})")
+            skipped_count += 1
+            continue
+        
+        processed_keys.add(plato_key)
+        
+        # Validar categoría
+        categoria = categorias.get(plato_data["categoria"])
+        if not categoria:
+            print(f"❌ Categoría '{plato_data['categoria']}' no encontrada para plato '{nombre_es}' - OMITIDO")
+            skipped_count += 1
+            continue
+        
+        # Buscar si ya existe (por precio, unidad y categoría)
+        existing = db.query(Plato).filter_by(
+            precio=Decimal(str(plato_data["precio"])),
+            precio_unidad=plato_data.get("precio_unidad"),
+            categoria_id=categoria.id
+        ).first()
+        
         if not existing:
-            # Validar categoría
-            categoria = categorias.get(plato_data["categoria"])
-            if not categoria:
-                print(f"❌ Categoría '{plato_data['categoria']}' no encontrada para plato '{plato_nombre}' - OMITIDO")
-                skipped_count += 1
-                continue
-            
             try:
-                # Crear plato
+                # Crear plato (sin nombre ni descripción en la tabla principal)
                 plato = Plato(
-                    nombre=plato_nombre,
-                    descripcion=plato_data.get("descripcion"),
                     precio=Decimal(str(plato_data["precio"])),
                     precio_unidad=plato_data.get("precio_unidad"),
                     categoria_id=categoria.id,
@@ -271,7 +292,7 @@ def load_platos(db, data: List[Dict[str, Any]], categorias: Dict[str, CategoriaP
                     is_active=plato_data.get("is_active", True)
                 )
                 
-                # Agregar alérgenos con mapeo mejorado
+                # Agregar alérgenos
                 plato_alergenos = plato_data.get("alergenos", [])
                 for alergeno_nombre in plato_alergenos:
                     # Mapeo de nombres inconsistentes
@@ -281,19 +302,40 @@ def load_platos(db, data: List[Dict[str, Any]], categorias: Dict[str, CategoriaP
                     if alergeno:
                         plato.alergenos.append(alergeno)
                     else:
-                        print(f"⚠️ Alérgeno '{alergeno_nombre}' (mapeado: '{alergeno_mapped}') no encontrado para plato '{plato_nombre}'")
+                        print(f"⚠️ Alérgeno '{alergeno_nombre}' (mapeado: '{alergeno_mapped}') no encontrado para plato '{nombre_es}'")
                 
+                # Guardar el plato primero para obtener el ID
                 db.add(plato)
+                db.flush()  # Obtener el ID del plato
+                
+                # Agregar traducciones
+                from src.entities.plato_traduccion import PlatoTraduccion
+                
+                traducciones_agregadas = 0
+                for traduccion_data in plato_data["traducciones"]:
+                    traduccion = PlatoTraduccion(
+                        plato_id=plato.id,
+                        idioma=traduccion_data["idioma"],
+                        nombre=traduccion_data["nombre"],
+                        descripcion=traduccion_data.get("descripcion", "")
+                    )
+                    db.add(traduccion)
+                    traducciones_agregadas += 1
+                
+                db.flush()  # Confirmar traducciones
                 loaded_count += 1
                 
                 # Debug info
-                print(f"✅ Plato agregado: '{plato_nombre}' - Precio: {plato.precio} - Categoría: {categoria.nombre}")
+                print(f"✅ Plato agregado: '{nombre_es}' - Precio: {plato.precio} {plato.precio_unidad or ''} - Categoría: {categoria.nombre} - Traducciones: {traducciones_agregadas}")
                 
             except Exception as e:
-                print(f"❌ Error al crear plato '{plato_nombre}': {e}")
+                db.rollback()
+                print(f"❌ Error al crear plato '{nombre_es}': {e}")
+                import traceback
+                traceback.print_exc()
                 skipped_count += 1
         else:
-            print(f"ℹ️ Plato ya existe: '{plato_nombre}'")
+            print(f"ℹ️ Plato ya existe: '{nombre_es}' ({plato_data['precio']} {plato_data.get('precio_unidad', '')})")
             skipped_count += 1
     
     db.commit()
@@ -472,9 +514,9 @@ def load_data_from_json(json_file_path: str):
             print(f"📊 Procesando {len(data['vinos'])} vinos...")
             load_vinos(db, data["vinos"], categorias_vinos, bodegas, denominaciones, enologos, uvas)
         
-        # 4. Usuarios (opcional)
-        if "users" in data and data["users"]:
-            load_users(db, data["users"])
+        # # 4. Usuarios (opcional)
+        # if "users" in data and data["users"]:
+        #     load_user(db, data["users"])
         
         # Verificar resultados finales
         print("\n📊 RESUMEN FINAL DE CARGA:")

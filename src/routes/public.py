@@ -17,6 +17,11 @@ router = APIRouter(prefix="/public", tags=["Public"])
 )
 async def get_platos(
     db: Session = Depends(get_db),
+    idioma: str = Query(
+        ...,
+        description="Idioma para las traducciones de los platos",
+        example="es"
+    ),
     categoria: Optional[str] = Query(
         None, 
         description="Filtrar por categoría específica (búsqueda parcial)",
@@ -68,6 +73,7 @@ async def get_platos(
     try:
         menu_repo = MenuService(db)
         platos_agrupados = menu_repo.get_platos_public(
+            idioma=idioma,
             categoria=categoria,
             sugerencias=sugerencias,
             precio_min=precio_min,

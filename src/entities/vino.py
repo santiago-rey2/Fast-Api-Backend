@@ -7,7 +7,12 @@ from typing import Optional, List
 from sqlalchemy import String, Numeric, ForeignKey, Table, Column
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.database import Base
+from src.entities.bodega import Bodega
+from src.entities.categoria_vino import CategoriaVino
+from src.entities.denominacion_origen import DenominacionOrigen
+from src.entities.enologo import Enologo
 from src.entities.mixins import AuditMixin
+from src.entities.uva import Uva
 
 # Tabla intermedia para relación many-to-many entre vinos y uvas
 vinos_uvas = Table(

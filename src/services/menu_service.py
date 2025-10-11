@@ -11,7 +11,8 @@ class MenuService:
         self.menu_repo = MenuRepository(db)
     
     def get_platos_public(
-        self, 
+        self,
+        idioma: str,
         categoria: Optional[str] = None,
         sugerencias: Optional[bool] = None,
         precio_min: Optional[float] = None,
@@ -25,6 +26,7 @@ class MenuService:
         
         # Usar repository (solo query)
         platos = self.menu_repo.get_platos_with_filters(
+            idioma=idioma,
             categoria=categoria,
             sugerencias=sugerencias,
             precio_min=precio_min,
@@ -33,7 +35,7 @@ class MenuService:
         )
         
         # TRANSFORMACIÓN: agrupar y formatear para API
-        return self._group_platos_by_category(platos)
+        return self._group_platos_by_category(platos, idioma)
     
     def _determine_active_filter(self, sugerencias: Optional[bool]) -> Optional[bool]:
         """
@@ -47,30 +49,33 @@ class MenuService:
             # Comportamiento por defecto: solo activos
             return True
     
-    def _group_platos_by_category(self, platos: List) -> Dict[str, List[Dict[str, Any]]]:
+    def _group_platos_by_category(self, platos: List, idioma: str) -> Dict[str, List[Dict[str, Any]]]:
         """
-        TRANSFORMACIÓN: convertir objetos Plato a estructura para API
+        TRANSFORMACIÓN: convertir objetos Plato a estructura para API,
+        usando el idioma solicitado.
         """
         platos_agrupados = {}
         
         for plato in platos:
             categoria_nombre = plato.categoria.nombre
-            
-            # Crear la categoría si no existe
+
             if categoria_nombre not in platos_agrupados:
                 platos_agrupados[categoria_nombre] = []
-            
-            # Transformar a diccionario para API
+
+            # Buscar traducción correspondiente al idioma
+            traduccion = next((t for t in plato.traducciones if t.idioma == idioma), None)
+
+            # Armar la estructura JSON final
             plato_dict = {
                 "id": plato.id,
-                "nombre": plato.nombre,
-                "descripcion": plato.descripcion,
+                "nombre": traduccion.nombre if traduccion else "N/A",
+                "descripcion": traduccion.descripcion if traduccion else None,
                 "precio": float(plato.precio) if plato.precio else None,
                 "precio_unidad": plato.precio_unidad,
                 "sugerencias": plato.sugerencias,
-                "alergenos": [alergeno.nombre for alergeno in plato.alergenos] if plato.alergenos else []
+                "alergenos": [a.nombre for a in plato.alergenos] if plato.alergenos else []
             }
-            
+
             platos_agrupados[categoria_nombre].append(plato_dict)
-        
+
         return platos_agrupados

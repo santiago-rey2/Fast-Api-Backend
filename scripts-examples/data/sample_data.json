@@ -1,124 +1,86 @@
 {
   "categorias_platos": [
     {
-      "nombre": "Entrantes",
-      "descripcion": "Primeros platos y aperitivos"
-    },
-    {
-      "nombre": "Principales",
-      "descripcion": "Platos principales"
-    },
-    {
-      "nombre": "Postres",
-      "descripcion": "Postres y dulces"
+      "nombre": "string",
+      "descripcion": "string"
     }
   ],
   "categorias_vinos": [
     {
-      "nombre": "Tinto joven",
-      "descripcion": "Vinos tintos jóvenes"
-    },
-    {
-      "nombre": "Tinto crianza",
-      "descripcion": "Vinos tintos con crianza"
-    },
-    {
-      "nombre": "Blanco joven",
-      "descripcion": "Vinos blancos jóvenes"
+      "nombre": "string",
+      "descripcion": "string"
     }
   ],
   "alergenos": [
     {
-      "nombre": "Gluten",
-      "descripcion": "Contiene gluten"
-    },
-    {
-      "nombre": "Lácteos",
-      "descripcion": "Contiene productos lácteos"
-    },
-    {
-      "nombre": "Huevos",
-      "descripcion": "Contiene huevo"
-    },
-    {
-      "nombre": "Pescado",
-      "descripcion": "Contiene pescado"
+      "nombre": "string",
+      "descripcion": "string"
     }
   ],
   "bodegas": [
     {
-      "nombre": "Marqués de Riscal",
-      "region": "Rioja"
-    },
-    {
-      "nombre": "Torres",
-      "region": "Penedès"
+      "nombre": "string",
+      "region": "string"
     }
   ],
   "denominaciones_origen": [
     {
-      "nombre": "D.O. Rioja",
-      "region": "La Rioja"
-    },
-    {
-      "nombre": "D.O. Penedès",
-      "region": "Cataluña"
+      "nombre": "string",
+      "region": "string"
     }
   ],
   "enologos": [
     {
-      "nombre": "Francisco Hurtado de Amézaga"
-    },
-    {
-      "nombre": "Miguel Torres Maczassek"
+      "nombre": "string"
     }
   ],
   "uvas": [
     {
-      "nombre": "Tempranillo",
-      "tipo": "Tinta"
-    },
-    {
-      "nombre": "Albariño",
-      "tipo": "Blanca"
+      "nombre": "string",
+      "tipo": "string"
     }
   ],
   "platos": [
     {
-      "nombre": "Ensalada César",
-      "descripcion": "Lechuga romana con salsa césar",
-      "precio": 12.5,
-      "categoria": "Entrantes",
-      "sugerencias": true,
-      "is_active": true,
+      "precio": "float",
+      "precio_unidad": "string|null",
+      "categoria": "string",
+      "sugerencias": "boolean",
+      "is_active": "boolean",
       "alergenos": [
-        "Gluten",
-        "Huevos",
-        "Lácteos"
+        "string"
+      ],
+      "traducciones": [
+        {
+          "idioma": "string",
+          "nombre": "string",
+          "descripcion": "string"
+        }
       ]
     }
   ],
   "vinos": [
     {
-      "nombre": "Marqués de Riscal Reserva",
-      "precio": 15.9,
-      "categoria": "Tinto crianza",
-      "bodega": "Marqués de Riscal",
-      "denominacion": "D.O. Rioja",
-      "enologo": "Francisco Hurtado de Amézaga",
-      "is_active": true,
+      "nombre": "string",
+      "precio": "float",
+      "precio_unidad": "string|null",
+      "categoria": "string",
+      "bodega": "string",
+      "denominacion": "string|null",
+      "enologo": "string|null",
+      "is_active": "boolean",
       "uvas": [
-        "Tempranillo"
+        "string"
       ]
     }
   ],
   "users": [
     {
-      "email": "admin@restaurant.com",
-      "username": "admin",
-      "password": "admin123",
-      "is_superuser": true,
-      "is_active": true
+      "email": "string",
+      "username": "string",
+      "password": "string",
+      "is_admin": "boolean",
+      "is_active": "boolean"
     }
   ]
 }

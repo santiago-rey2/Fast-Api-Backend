@@ -2,17 +2,19 @@
 Repository para manejar queries de menú
 """
 from typing import List, Optional
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.orm import Session, selectinload,contains_eager, with_loader_criteria 
 from sqlalchemy import and_
 from src.entities.plato import Plato
 from src.entities.categoria_plato import CategoriaPlato
+from src.entities.plato_traduccion import PlatoTraduccion
 
 class MenuRepository:
     def __init__(self, db: Session) -> None:
         self.db = db
     
     def get_platos_with_filters(
-        self, 
+        self,
+        idioma: str,
         categoria: Optional[str] = None,
         sugerencias: Optional[bool] = None,
         precio_min: Optional[float] = None,
@@ -25,8 +27,14 @@ class MenuRepository:
         # Construir query base
         query = (
             self.db.query(Plato)
+            .join(Plato.traducciones)
             .join(CategoriaPlato)
-            .options(selectinload(Plato.alergenos))
+            .options(
+                contains_eager(Plato.traducciones),
+                selectinload(Plato.alergenos),
+                with_loader_criteria(PlatoTraduccion, PlatoTraduccion.idioma == idioma)
+            )
+            .filter(PlatoTraduccion.idioma == idioma)
         )
         
         # Aplicar filtros básicos
